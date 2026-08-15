@@ -1,4 +1,4 @@
-import { join, readdirWithFileTypes } from "@/filesystem";
+import { exists, join, readdirWithFileTypes } from "@/filesystem";
 
 import type { TranslationFile } from "../file";
 import type { TranslationLocale } from "../locale";
@@ -13,6 +13,10 @@ export const directoriesLayout: TranslationLayoutAdapter = {
 	},
 
 	async discoverFiles(locale): Promise<TranslationFile[]> {
+		if (!(await exists(locale.path))) {
+			return [];
+		}
+
 		const entries = await readdirWithFileTypes(locale.path);
 
 		entries.sort((a, b) => a.name.localeCompare(b.name));

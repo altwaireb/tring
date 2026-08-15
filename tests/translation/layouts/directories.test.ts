@@ -134,6 +134,22 @@ describe("directoriesLayout", () => {
 		}
 	});
 
+	it("returns no files when the locale directory does not exist", async () => {
+		const directory = await createTempDirectory();
+
+		try {
+			const locale = directoriesLayout.resolveLocale(directory, "ar-SA");
+			const files = await directoriesLayout.discoverFiles(locale);
+
+			expect(files).toEqual([]);
+		} finally {
+			await rm(directory, {
+				recursive: true,
+				force: true,
+			});
+		}
+	});
+
 	it("returns no files for an empty locale directory", async () => {
 		const directory = await createTempDirectory();
 
