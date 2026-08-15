@@ -2,7 +2,7 @@ import { defineCommand } from "citty";
 
 import { runAnalyzeCommand } from "@/cli/commands/analyze";
 import { loadTringConfig } from "@/config";
-import { log } from "@/logger";
+import { createSpinner } from "@/spinner";
 
 export default defineCommand({
 	meta: {
@@ -21,10 +21,14 @@ export default defineCommand({
 	},
 
 	async run({ args }) {
+		const spinner = createSpinner("Analyzing translations...");
+
+		spinner.start();
+
 		const result = await loadTringConfig();
 
 		if (!result.config) {
-			log.error("Tring configuration file was not found. Run `tring init`.");
+			spinner.fail("Tring configuration file was not found. Run `tring init`.");
 			process.exitCode = 1;
 			return;
 		}
@@ -32,6 +36,8 @@ export default defineCommand({
 		const command = await runAnalyzeCommand(result.config, {
 			showFiles: args.showFiles ?? false,
 		});
+
+		spinner.stop();
 
 		if (command.output) {
 			console.log(command.output);
