@@ -1,0 +1,66 @@
+{
+	"name": "tring",
+	"version": "0.1.0",
+	"private": true,
+	"description": "A developer-first toolkit for managing JSON translations.",
+	"keywords": [
+		"i18n",
+		"l10n",
+		"localization",
+		"translation",
+		"json",
+		"cli",
+		"typescript"
+	],
+	"homepage": "https://github.com/altwaireb/tring",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/altwaireb/tring.git"
+	},
+	"bugs": {
+		"url": "https://github.com/altwaireb/tring/issues"
+	},
+	"license": "MIT",
+	"author": "Abdulmajeed Altwaireb",
+	"type": "module",
+	"bin": {
+		"tring": "./dist/cli-entry.mjs"
+	},
+	"files": [
+		"dist"
+	],
+	"exports": {
+		".": {
+			"types": "./dist/index.d.mts",
+			"import": "./dist/index.mjs"
+		}
+	},
+	"engines": {
+		"node": ">=22"
+	},
+	"scripts": {
+		"dev": "tsx src/index.ts",
+		"build": "tsdown",
+		"test": "vitest run",
+		"format": "biome format --write .",
+		"lint": "biome check .",
+		"check": "tsc --noEmit"
+	},
+	"packageManager": "pnpm@10.17.1",
+	"dependencies": {
+		"c12": "4.0.0-beta.5",
+		"citty": "^0.2.2",
+		"consola": "^3.4.2"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.5.7",
+		"@types/node": "^26.1.2",
+		"tsdown": "^0.22.14",
+		"tsx": "^4.23.8",
+		"typescript": "^5.9.3",
+		"vitest": "^4.1.10"
+	},
+	"allowScripts": {
+		"esbuild@0.28.2": true
+	}
+}

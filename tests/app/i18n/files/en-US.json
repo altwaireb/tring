@@ -1,0 +1,10 @@
+{
+	"auth": {
+		"title": "Authentication",
+		"login": "Login"
+	},
+	"common": {
+		"save": "Save",
+		"cancel": "Cancel"
+	}
+}
