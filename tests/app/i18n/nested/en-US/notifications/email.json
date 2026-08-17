@@ -1,0 +1,10 @@
+{
+	"welcome": {
+		"subject": "Welcome",
+		"body": "Welcome to our application."
+	},
+	"password_reset": {
+		"subject": "Password reset",
+		"body": "Reset your password."
+	}
+}

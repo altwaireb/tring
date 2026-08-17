@@ -1,0 +1,11 @@
+{
+	"title": "Paramètres",
+	"account": {
+		"title": "Compte",
+		"email": "E-mail"
+	},
+	"security": {
+		"title": "Sécurité",
+		"password": "Mot de passe"
+	}
+}

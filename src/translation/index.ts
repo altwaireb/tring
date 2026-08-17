@@ -18,6 +18,10 @@ export type { TranslationDocument } from "./document";
 export type { TranslationFile } from "./file";
 export { isTranslationKey, type TranslationKey } from "./key";
 export { extractTranslationKeys } from "./keys";
+export {
+	type FormatTranslationResourcesOptions,
+	formatTranslationResources,
+} from "./list-format";
 export type { TranslationLocale } from "./locale";
 export { readTranslationFile } from "./read";
 export {

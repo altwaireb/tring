@@ -4,6 +4,7 @@ import analyze from "@/commands/analyze";
 import analyzeOnly from "@/commands/analyze-only";
 import doctor from "@/commands/doctor";
 import init from "@/commands/init";
+import list from "@/commands/list";
 import { pkg } from "./package";
 
 export const cli = defineCommand({
@@ -16,6 +17,7 @@ export const cli = defineCommand({
 	subCommands: {
 		init,
 		doctor,
+		list,
 		analyze,
 		"analyze-only": analyzeOnly,
 	},

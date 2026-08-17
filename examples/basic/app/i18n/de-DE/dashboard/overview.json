@@ -1,0 +1,8 @@
+{
+	"title": "Dashboard",
+	"welcome": "Willkommen zurück",
+	"statistics": {
+		"users": "Benutzer",
+		"revenue": "Umsatz"
+	}
+}

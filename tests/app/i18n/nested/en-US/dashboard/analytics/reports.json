@@ -1,0 +1,8 @@
+{
+	"title": "Reports",
+	"sales": {
+		"daily": "Daily sales",
+		"monthly": "Monthly sales"
+	},
+	"export": "Export report"
+}

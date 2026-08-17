@@ -1,0 +1,10 @@
+{
+	"title": "Users",
+	"create": "Create user",
+	"edit": "Edit user",
+	"delete": "Delete user",
+	"status": {
+		"active": "Active",
+		"inactive": "Inactive"
+	}
+}

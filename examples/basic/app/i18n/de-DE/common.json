@@ -1,0 +1,11 @@
+{
+	"actions": {
+		"save": "Speichern",
+		"cancel": "Abbrechen",
+		"delete": "Löschen"
+	},
+	"navigation": {
+		"home": "Startseite",
+		"settings": "Einstellungen"
+	}
+}

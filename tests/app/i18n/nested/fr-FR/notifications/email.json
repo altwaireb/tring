@@ -1,0 +1,10 @@
+{
+	"welcome": {
+		"subject": "Bienvenue",
+		"body": "Bienvenue dans notre application."
+	},
+	"password_reset": {
+		"subject": "Réinitialisation du mot de passe",
+		"body": "Réinitialisez votre mot de passe."
+	}
+}

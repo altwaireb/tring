@@ -17,27 +17,49 @@ export const directoriesLayout: TranslationLayoutAdapter = {
 			return [];
 		}
 
-		const entries = await readdirWithFileTypes(locale.path);
-
-		entries.sort((a, b) => a.name.localeCompare(b.name));
-
 		const files: TranslationFile[] = [];
 
-		for (const entry of entries) {
-			if (!entry.isFile() || !entry.name.endsWith(".json")) {
-				continue;
-			}
+		async function visit(
+			path: string,
+			relativeDirectory: string,
+		): Promise<void> {
+			const entries = await readdirWithFileTypes(path);
 
-			files.push({
-				locale: locale.locale,
-				directory: "",
-				name: entry.name.replace(/\.json$/, ""),
-				filename: entry.name,
-				key: entry.name,
-				isLocaleFile: false,
-				path: join(locale.path, entry.name),
-			});
+			entries.sort((a, b) => a.name.localeCompare(b.name));
+
+			for (const entry of entries) {
+				const entryPath = join(path, entry.name);
+
+				if (entry.isDirectory()) {
+					const directory = relativeDirectory
+						? `${relativeDirectory}/${entry.name}`
+						: entry.name;
+
+					await visit(entryPath, directory);
+					continue;
+				}
+
+				if (!entry.isFile() || !entry.name.endsWith(".json")) {
+					continue;
+				}
+
+				const key = relativeDirectory
+					? `${relativeDirectory}/${entry.name}`
+					: entry.name;
+
+				files.push({
+					locale: locale.locale,
+					directory: relativeDirectory,
+					name: entry.name.replace(/\.json$/, ""),
+					filename: entry.name,
+					key,
+					isLocaleFile: false,
+					path: entryPath,
+				});
+			}
 		}
+
+		await visit(locale.path, "");
 
 		return files;
 	},

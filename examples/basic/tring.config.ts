@@ -7,5 +7,5 @@ export default defineConfig({
 
 	source: "en-US",
 
-	locales: ["ar-SA"],
+	locales: ["ar-SA", "fr-FR", "de-DE"],
 });
