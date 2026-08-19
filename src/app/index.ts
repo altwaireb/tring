@@ -3,7 +3,13 @@ export {
 	type AnalyzeApplicationResult,
 	analyzeApplication,
 } from "./analyze";
-
+export {
+	type CompareApplicationResult,
+	type CompareResourceResult,
+	compareApplication,
+	compareResource,
+} from "./compare";
+export { findTranslationKeyResources } from "./find-key";
 export {
 	type ListApplicationOptions,
 	type ListApplicationResult,

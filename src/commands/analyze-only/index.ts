@@ -15,6 +15,7 @@ export default defineCommand({
 		locale: {
 			type: "positional",
 			description: "The locale to analyze.",
+			alias: "l",
 			required: true,
 		},
 

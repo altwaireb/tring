@@ -2,6 +2,7 @@ import { defineCommand, runMain } from "citty";
 
 import analyze from "@/commands/analyze";
 import analyzeOnly from "@/commands/analyze-only";
+import compare from "@/commands/compare";
 import doctor from "@/commands/doctor";
 import init from "@/commands/init";
 import list from "@/commands/list";
@@ -18,6 +19,7 @@ export const cli = defineCommand({
 		init,
 		doctor,
 		list,
+		compare,
 		analyze,
 		"analyze-only": analyzeOnly,
 	},

@@ -7,5 +7,9 @@
 	"security": {
 		"title": "Security",
 		"password": "Password"
+	},
+	"status": {
+		"active": "Active",
+		"inactive": "Inactive"
 	}
 }

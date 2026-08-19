@@ -13,6 +13,14 @@ export {
 	type MatchedTranslationFiles,
 	type TranslationFileComparison,
 } from "./compare-files";
+export {
+	formatTranslationComparison,
+	formatTranslationComparisonHeader,
+} from "./compare-format";
+export {
+	compareTranslationValues,
+	type TranslationValueComparison,
+} from "./compare-values";
 export { discoverTranslationFiles } from "./discover";
 export type { TranslationDocument } from "./document";
 export type { TranslationFile } from "./file";
@@ -23,6 +31,10 @@ export {
 	formatTranslationResources,
 } from "./list-format";
 export type { TranslationLocale } from "./locale";
+export {
+	getTranslationPage,
+	type TranslationPage,
+} from "./pagination";
 export { readTranslationFile } from "./read";
 export {
 	createTranslationReport,
@@ -33,3 +45,4 @@ export {
 	type FormatTranslationReportOptions,
 	formatTranslationReport,
 } from "./report-format";
+export { getTranslationValue } from "./values";
