@@ -29,7 +29,7 @@ const config = defineConfig({
 	source: "en-US",
 	locales: ["ar-SA", "fr-FR", "de-DE"],
 });
-
+// test for directories layout
 describe("compare command", () => {
 	let logs: string[];
 
@@ -442,6 +442,226 @@ describe("compare command", () => {
 		expect(mocks.compareResource).not.toHaveBeenCalled();
 	});
 });
+
+// test for files layout
+describe("compare command (files layout)", () => {
+	const config = defineConfig({
+		directory: "tests/app/i18n/files",
+		layout: TranslationLayout.files,
+		source: "en-US",
+		locales: ["ar-SA"],
+	});
+
+	let logs: string[];
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+
+		logs = [];
+
+		const resource = createFileResource();
+
+		mocks.compareApplication.mockResolvedValue({
+			source: "en-US",
+			resources: [resource],
+		});
+
+		vi.spyOn(console, "log").mockImplementation((...args) => {
+			logs.push(args.join(" "));
+		});
+	});
+
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
+	it("searches source locale file", async () => {
+		const resource = createFileResource();
+
+		mocks.search.mockResolvedValue(resource);
+
+		mocks.compareResource.mockResolvedValue({
+			resource,
+			comparisons: [
+				{
+					key: "auth.title",
+					values: {
+						"en-US": "Authentication",
+						"ar-SA": "المصادقة",
+					},
+				},
+				{
+					key: "auth.login",
+					values: {
+						"en-US": "Login",
+						"ar-SA": "تسجيل الدخول",
+					},
+				},
+			],
+		});
+
+		const result = await runCompareCommand(config);
+
+		expect(result.exitCode).toBe(0);
+		expect(result.resource).toEqual(resource);
+
+		expect(mocks.search).toHaveBeenCalledTimes(1);
+
+		const options = mocks.search.mock.calls[0]?.[0];
+
+		expect(options).toBeDefined();
+
+		if (!options) {
+			throw new Error("Expected search options.");
+		}
+
+		expect(options.message).toBe("Select a resource:");
+		expect(options.pageSize).toBe(8);
+
+		const choices = await options.source("", {
+			signal: new AbortController().signal,
+		});
+
+		expect(choices).toEqual([
+			{
+				name: "en-US.json",
+				value: resource,
+			},
+		]);
+	});
+
+	it("selects the source locale file directly when file is provided", async () => {
+		const resource = createFileResource();
+
+		mocks.compareResource.mockResolvedValue({
+			resource,
+			comparisons: [
+				{
+					key: "auth.title",
+					values: {
+						"en-US": "Authentication",
+						"ar-SA": "المصادقة",
+					},
+				},
+			],
+		});
+
+		const result = await runCompareCommand(config, {
+			file: "en-US.json",
+		});
+
+		expect(result.exitCode).toBe(0);
+		expect(result.resource).toEqual(resource);
+
+		expect(mocks.search).not.toHaveBeenCalled();
+		expect(mocks.compareResource).toHaveBeenCalledWith(config, resource);
+
+		expect(logs.join("\n")).toContain("auth.title");
+	});
+
+	it("filters the file comparison by key", async () => {
+		const resource = createFileResource();
+
+		mocks.findTranslationKeyResources.mockResolvedValue([resource]);
+
+		mocks.compareResource.mockResolvedValue({
+			resource,
+			comparisons: [
+				{
+					key: "auth.title",
+					values: {
+						"en-US": "Authentication",
+						"ar-SA": "المصادقة",
+					},
+				},
+				{
+					key: "common.save",
+					values: {
+						"en-US": "Save",
+						"ar-SA": "حفظ",
+					},
+				},
+			],
+		});
+
+		const result = await runCompareCommand(config, {
+			key: "common.save",
+		});
+
+		expect(result.exitCode).toBe(0);
+		expect(result.resource).toEqual(resource);
+
+		expect(mocks.findTranslationKeyResources).toHaveBeenCalledWith(
+			config,
+			"common.save",
+		);
+
+		expect(mocks.search).not.toHaveBeenCalled();
+		expect(mocks.compareResource).toHaveBeenCalledWith(config, resource);
+
+		const output = logs.join("\n");
+
+		expect(output).toContain("key: common.save");
+		expect(output).not.toContain("key: auth.title");
+	});
+
+	it("selects the file automatically when key exists in the source locale file", async () => {
+		const resource = createFileResource();
+
+		mocks.findTranslationKeyResources.mockResolvedValue([resource]);
+
+		mocks.compareResource.mockResolvedValue({
+			resource,
+			comparisons: [
+				{
+					key: "auth.title",
+					values: {
+						"en-US": "Authentication",
+						"ar-SA": "المصادقة",
+					},
+				},
+			],
+		});
+
+		const result = await runCompareCommand(config, {
+			key: "auth.title",
+		});
+
+		expect(result.exitCode).toBe(0);
+		expect(result.resource).toEqual(resource);
+
+		expect(mocks.findTranslationKeyResources).toHaveBeenCalledWith(
+			config,
+			"auth.title",
+		);
+
+		expect(mocks.search).not.toHaveBeenCalled();
+		expect(mocks.compareResource).toHaveBeenCalledWith(config, resource);
+	});
+
+	it("throws when the requested file does not exist", async () => {
+		await expect(
+			runCompareCommand(config, {
+				file: "missing.json",
+			}),
+		).rejects.toThrow('Translation resource was not found: "missing.json".');
+
+		expect(mocks.search).not.toHaveBeenCalled();
+		expect(mocks.compareResource).not.toHaveBeenCalled();
+	});
+});
+
+function createFileResource(): TranslationFile {
+	return {
+		locale: "en-US",
+		directory: "",
+		name: "locale",
+		filename: "en-US.json",
+		key: "en-US.json",
+		isLocaleFile: true,
+		path: "tests/app/i18n/files/en-US.json",
+	};
+}
 
 function createComparisons(count: number) {
 	return Array.from({ length: count }, (_, index) => ({
