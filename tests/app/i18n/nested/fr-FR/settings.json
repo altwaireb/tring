@@ -9,6 +9,7 @@
 		"password": "Mot de passe"
 	},
 	"status": {
+		"active": "",
 		"inactive": "Inactif"
 	}
 }

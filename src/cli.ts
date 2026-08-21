@@ -6,6 +6,7 @@ import compare from "@/commands/compare";
 import doctor from "@/commands/doctor";
 import init from "@/commands/init";
 import list from "@/commands/list";
+import missing from "@/commands/missing";
 import { pkg } from "./package";
 
 export const cli = defineCommand({
@@ -20,6 +21,7 @@ export const cli = defineCommand({
 		doctor,
 		list,
 		compare,
+		missing,
 		analyze,
 		"analyze-only": analyzeOnly,
 	},

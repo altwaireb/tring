@@ -32,6 +32,11 @@ export {
 } from "./list-format";
 export type { TranslationLocale } from "./locale";
 export {
+	findTranslationMissingIssues,
+	type TranslationMissingIssue,
+} from "./missing";
+export * from "./missing-format";
+export {
 	getTranslationPage,
 	type TranslationPage,
 } from "./pagination";

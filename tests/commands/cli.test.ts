@@ -16,4 +16,22 @@ describe("CLI", () => {
 		expect(subCommands).toHaveProperty("analyze");
 		expect(subCommands).toHaveProperty("analyze-only");
 	});
+
+	it("registers the compare command", async () => {
+		const subCommands =
+			typeof cli.subCommands === "function"
+				? await cli.subCommands()
+				: await cli.subCommands;
+
+		expect(subCommands).toHaveProperty("compare");
+	});
+
+	it("registers the missing command", async () => {
+		const subCommands =
+			typeof cli.subCommands === "function"
+				? await cli.subCommands()
+				: await cli.subCommands;
+
+		expect(subCommands).toHaveProperty("missing");
+	});
 });

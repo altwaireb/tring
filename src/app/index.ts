@@ -16,3 +16,7 @@ export {
 	listApplication,
 	type TranslationResourceSummary,
 } from "./list";
+export {
+	type MissingApplicationResult,
+	missingApplication,
+} from "./missing";

@@ -1028,7 +1028,7 @@ packages:
     hasBin: true
 
   tring@file:tring-0.1.0.tgz:
-    resolution: {integrity: sha512-KrVX/lGJ++TmaiDa5kkf4BiEGzVHyr3NEIkbBFZQpP5sx4dyCNuQyvil6g5AtQmGDVC8tghpxNSTV6nG+4w3Pg==, tarball: file:tring-0.1.0.tgz}
+    resolution: {integrity: sha512-7UFOfxoFJ0chob+d8LhRy4+GVuTBz+1FOzaw3IDwUobMX9lUnV3Ab4TCGHf0PEH2uZX7bq6/SJftdBENM1Gnjg==, tarball: file:tring-0.1.0.tgz}
     version: 0.1.0
     engines: {node: '>=22'}
     hasBin: true
