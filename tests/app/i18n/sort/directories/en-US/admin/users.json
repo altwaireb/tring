@@ -1,0 +1,11 @@
+{
+	"title": "Users",
+	"status": {
+		"inactive": "Inactive",
+		"active": "Active"
+	},
+	"account": {
+		"title": "Account",
+		"email": "Email"
+	}
+}

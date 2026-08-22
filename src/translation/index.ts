@@ -50,4 +50,10 @@ export {
 	type FormatTranslationReportOptions,
 	formatTranslationReport,
 } from "./report-format";
+export {
+	compareTranslationKeyNames,
+	isTranslationObjectSorted,
+	sortTranslationObject,
+} from "./sort";
+export { formatTranslationSort } from "./sort-format";
 export { getTranslationValue } from "./values";

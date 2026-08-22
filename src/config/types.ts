@@ -22,13 +22,6 @@ export enum TranslationLayout {
  */
 export interface JsonOptions {
 	/**
-	 * Sort translation keys alphabetically.
-	 *
-	 * @default false
-	 */
-	sortKeys?: boolean;
-
-	/**
 	 * Number of spaces used for indentation.
 	 *
 	 * @default 2

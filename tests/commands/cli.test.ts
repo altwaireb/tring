@@ -34,4 +34,13 @@ describe("CLI", () => {
 
 		expect(subCommands).toHaveProperty("missing");
 	});
+
+	it("registers the sort command", async () => {
+		const subCommands =
+			typeof cli.subCommands === "function"
+				? await cli.subCommands()
+				: await cli.subCommands;
+
+		expect(subCommands).toHaveProperty("sort");
+	});
 });

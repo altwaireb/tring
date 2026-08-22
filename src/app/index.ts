@@ -20,3 +20,9 @@ export {
 	type MissingApplicationResult,
 	missingApplication,
 } from "./missing";
+export {
+	type SortApplicationOptions,
+	type SortApplicationResult,
+	sortApplication,
+	type TranslationSortResult,
+} from "./sort";

@@ -1,0 +1,11 @@
+{
+	"account": {
+		"email": "Email",
+		"title": "Account"
+	},
+	"security": {
+		"password": "Password",
+		"title": "Security"
+	},
+	"title": "Settings"
+}

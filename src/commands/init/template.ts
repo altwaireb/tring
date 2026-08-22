@@ -11,6 +11,12 @@ export default defineConfig({
 	locales: [
 		"ar-SA",
 	],
+
+	// JSON formatting options.
+	// Recommended indent: 0-12 spaces. Default: 2.
+	// json: {
+	// 	indent: 2,
+	// },
 });
 `;
 }
