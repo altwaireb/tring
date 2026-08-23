@@ -288,4 +288,46 @@ describe("logger", () => {
 			"  ✓ auth.login.button  │  ar-SA  │  auth.json",
 		);
 	});
+
+	it("prints a separated error mark", () => {
+		const consoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
+
+		logger.separateErrorMark("auth.login.button", ["ar-SA", "auth.json"]);
+
+		expect(consoleLog).toHaveBeenCalled();
+	});
+
+	it("prints a separated warning mark", () => {
+		const consoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
+
+		logger.separateWarningMark("auth.login.button", ["ar-SA", "auth.json"]);
+
+		expect(consoleLog).toHaveBeenCalled();
+	});
+
+	it("prints a separated info mark", () => {
+		const consoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
+
+		logger.separateInfoMark("auth.login.button", ["ar-SA", "auth.json"]);
+
+		expect(consoleLog).toHaveBeenCalled();
+	});
+
+	it("prints a bullet", () => {
+		const consoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
+
+		logger.bullet("auth.login.button", ["ar-SA", "auth.json"]);
+
+		expect(consoleLog).toHaveBeenCalled();
+	});
+
+	it("applies indentation to bullet messages", () => {
+		const consoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
+
+		logger.bullet("auth.login.button", ["ar-SA", "auth.json"], {
+			indent: Indent.level1,
+		});
+
+		expect(consoleLog).toHaveBeenCalled();
+	});
 });

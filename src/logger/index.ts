@@ -200,4 +200,56 @@ export const logger = {
 			),
 		);
 	},
+
+	separateErrorMark(
+		message: string,
+		messages: string | string[],
+		options: SeparateOptions = {},
+	): void {
+		console.log(
+			formatSeparateMark(SYMBOLS.error, message, messages, options, chalk.red),
+		);
+	},
+
+	separateWarningMark(
+		message: string,
+		messages: string | string[],
+		options: SeparateOptions = {},
+	): void {
+		console.log(
+			formatSeparateMark(
+				SYMBOLS.warning,
+				message,
+				messages,
+				options,
+				chalk.yellow,
+			),
+		);
+	},
+
+	separateInfoMark(
+		message: string,
+		messages: string | string[],
+		options: SeparateOptions = {},
+	): void {
+		console.log(
+			formatSeparateMark(SYMBOLS.info, message, messages, options, chalk.cyan),
+		);
+	},
+
+	bullet(
+		message: string,
+		messages: string | string[],
+		options: SeparateOptions = {},
+	): void {
+		console.log(
+			formatSeparateMark(
+				SYMBOLS.bullet,
+				message,
+				messages,
+				options,
+				chalk.white,
+			),
+		);
+	},
 };
