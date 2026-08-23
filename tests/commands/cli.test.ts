@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { cli } from "@/cli";
 
-describe("CLI", () => {
-	it("registers the expected commands", async () => {
+describe("CLI Sub-commands", () => {
+	it("registers all expected sub-commands", async () => {
 		const subCommands =
 			typeof cli.subCommands === "function"
 				? await cli.subCommands()
@@ -11,36 +11,19 @@ describe("CLI", () => {
 
 		expect(subCommands).toBeDefined();
 
-		expect(subCommands).toHaveProperty("init");
-		expect(subCommands).toHaveProperty("doctor");
-		expect(subCommands).toHaveProperty("analyze");
-		expect(subCommands).toHaveProperty("analyze-only");
-	});
+		// All Commands
+		const expectedCommands = [
+			"init",
+			"doctor",
+			"analyze",
+			"analyze-only",
+			"compare",
+			"missing",
+			"sort",
+		];
 
-	it("registers the compare command", async () => {
-		const subCommands =
-			typeof cli.subCommands === "function"
-				? await cli.subCommands()
-				: await cli.subCommands;
-
-		expect(subCommands).toHaveProperty("compare");
-	});
-
-	it("registers the missing command", async () => {
-		const subCommands =
-			typeof cli.subCommands === "function"
-				? await cli.subCommands()
-				: await cli.subCommands;
-
-		expect(subCommands).toHaveProperty("missing");
-	});
-
-	it("registers the sort command", async () => {
-		const subCommands =
-			typeof cli.subCommands === "function"
-				? await cli.subCommands()
-				: await cli.subCommands;
-
-		expect(subCommands).toHaveProperty("sort");
+		expectedCommands.forEach((cmd) => {
+			expect(subCommands).toHaveProperty(cmd);
+		});
 	});
 });

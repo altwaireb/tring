@@ -22,7 +22,7 @@ export default defineCommand({
 		showFiles: {
 			type: "boolean",
 			description: "Show all translation files.",
-			alias: "show-files",
+			alias: ["show-files", "f"],
 			required: false,
 		},
 	},

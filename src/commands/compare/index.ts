@@ -43,8 +43,6 @@ export default defineCommand({
 
 		const command = await runCompareCommand(result.config, options);
 
-		console.log(`Selected: ${command.resource.key}`);
-
 		process.exitCode = command.exitCode;
 	},
 });

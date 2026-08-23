@@ -15,13 +15,13 @@ export default defineCommand({
 			type: "boolean",
 			description: "Include empty translations.",
 			required: false,
-			alias: "m",
+			alias: "e",
 		},
 
 		onlyEmpty: {
 			type: "boolean",
 			description: "Show only empty translations.",
-			alias: "only-empty",
+			alias: ["only-empty", "o"],
 			required: false,
 		},
 	},
