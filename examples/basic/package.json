@@ -3,6 +3,6 @@
 	"private": true,
 	"type": "module",
 	"dependencies": {
-		"tring": "file:..\\..\\tring-0.1.0.tgz"
+		"tring": "workspace:*"
 	}
 }

@@ -14,12 +14,12 @@ importers:
       c12:
         specifier: 4.0.0-beta.5
         version: 4.0.0-beta.5
+      chalk:
+        specifier: ^6.0.0
+        version: 6.0.0
       citty:
         specifier: ^0.2.2
         version: 0.2.2
-      consola:
-        specifier: ^3.4.2
-        version: 3.4.2
       ora:
         specifier: ^9.4.1
         version: 9.4.1
@@ -46,8 +46,8 @@ importers:
   examples/basic:
     dependencies:
       tring:
-        specifier: file:..\..\tring-0.1.0.tgz
-        version: file:tring-0.1.0.tgz(@types/node@26.2.0)
+        specifier: workspace:*
+        version: link:../..
 
 packages:
 
@@ -701,6 +701,10 @@ packages:
     resolution: {integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
+  chalk@6.0.0:
+    resolution: {integrity: sha512-2uNTXIuTTxk7ciZgAU1BQcgnchcG0xXnrs6jzkQfj9SsRa9M2s5zE8WT96hS6KmG4MzWHSrvH43DF1m4XRkrFg==}
+    engines: {node: '>=22'}
+
   chardet@2.2.0:
     resolution: {integrity: sha512-rddelWYNPRrXq6PtNEN2S3f6t9ILzvqaN5pVgi4kqt9jHQaXIial9PznB5iSPVlQSLNaaH22ItWz3EJtQ10+OA==}
 
@@ -721,10 +725,6 @@ packages:
 
   confbox@0.2.4:
     resolution: {integrity: sha512-ysOGlgTFbN2/Y6Cg3Iye8YKulHw+R2fNXHrgSmXISQdMnomY6eNDprVdW9R5xBguEqI954+S6709UyiO7B+6OQ==}
-
-  consola@3.4.2:
-    resolution: {integrity: sha512-5IKcdX0nnYavi6G7TtOhwkYzyjfJlatbjMjuLSfE2kYT5pMDOilZ4OvMhi637CcDICTmz3wARPoyhqyX1Y+XvA==}
-    engines: {node: ^14.18.0 || >=16.10.0}
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
@@ -1025,12 +1025,6 @@ packages:
 
   tree-kill@1.2.2:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
-    hasBin: true
-
-  tring@file:tring-0.1.0.tgz:
-    resolution: {integrity: sha512-7UFOfxoFJ0chob+d8LhRy4+GVuTBz+1FOzaw3IDwUobMX9lUnV3Ab4TCGHf0PEH2uZX7bq6/SJftdBENM1Gnjg==, tarball: file:tring-0.1.0.tgz}
-    version: 0.1.0
-    engines: {node: '>=22'}
     hasBin: true
 
   tsdown@0.22.14:
@@ -1626,6 +1620,8 @@ snapshots:
 
   chalk@5.6.2: {}
 
+  chalk@6.0.0: {}
+
   chardet@2.2.0: {}
 
   citty@0.2.2: {}
@@ -1639,8 +1635,6 @@ snapshots:
   cli-width@4.1.0: {}
 
   confbox@0.2.4: {}
-
-  consola@3.4.2: {}
 
   convert-source-map@2.0.0: {}
 
@@ -1910,21 +1904,6 @@ snapshots:
   tinyrainbow@3.1.1: {}
 
   tree-kill@1.2.2: {}
-
-  tring@file:tring-0.1.0.tgz(@types/node@26.2.0):
-    dependencies:
-      '@inquirer/prompts': 8.5.2(@types/node@26.2.0)
-      c12: 4.0.0-beta.5
-      citty: 0.2.2
-      consola: 3.4.2
-      ora: 9.4.1
-    transitivePeerDependencies:
-      - '@types/node'
-      - chokidar
-      - dotenv
-      - giget
-      - jiti
-      - magicast
 
   tsdown@0.22.14(tsx@4.23.11)(typescript@5.9.3):
     dependencies:
