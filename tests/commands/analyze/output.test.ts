@@ -22,7 +22,7 @@ describe("printAnalyzeReport", () => {
 
 		printAnalyzeReport(report);
 
-		expect(consoleLog).toHaveBeenCalledWith(MESSAGES.title);
+		expect(consoleLog).toHaveBeenCalledWith(MESSAGES.titleAnalysis);
 	});
 
 	it("prints the source and target", () => {

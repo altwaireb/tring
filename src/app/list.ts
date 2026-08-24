@@ -1,10 +1,6 @@
 import type { TringConfig } from "@/config";
 import { discoverTranslationFiles, type TranslationFile } from "@/translation";
 
-export interface ListApplicationOptions {
-	showFiles?: boolean;
-}
-
 export interface TranslationResourceSummary {
 	locale: string;
 	files: TranslationFile[];

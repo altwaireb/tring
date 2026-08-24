@@ -11,124 +11,116 @@ const config = defineConfig({
 });
 
 describe("list command", () => {
-	it("lists translation resources without files by default", async () => {
+	it("lists translation resources", async () => {
 		const result = await runListCommand(config);
 
 		expect(result.exitCode).toBe(0);
 
-		expect(result.output).toBe(`Translation Resources
+		expect(result.result.source).toBe("en-US");
 
-Source: en-US
+		expect(result.result.resources).toHaveLength(4);
 
-en-US (8 files)
+		expect(result.result.resources.map((resource) => resource.locale)).toEqual([
+			"en-US",
+			"ar-SA",
+			"fr-FR",
+			"de-DE",
+		]);
 
-ar-SA (7 files)
-
-fr-FR (6 files)
-
-de-DE (4 files)`);
+		expect(
+			result.result.resources.map((resource) => ({
+				locale: resource.locale,
+				files: resource.files.length,
+			})),
+		).toEqual([
+			{
+				locale: "en-US",
+				files: 8,
+			},
+			{
+				locale: "ar-SA",
+				files: 7,
+			},
+			{
+				locale: "fr-FR",
+				files: 6,
+			},
+			{
+				locale: "de-DE",
+				files: 4,
+			},
+		]);
 	});
 
-	it("lists translation resources with files", async () => {
-		const result = await runListCommand(config, {
-			showFiles: true,
-		});
+	it("discovers translation files for each locale", async () => {
+		const result = await runListCommand(config);
 
-		expect(result.exitCode).toBe(0);
+		const source = result.result.resources.find(
+			(resource) => resource.locale === "en-US",
+		);
 
-		expect(result.output).toBe(`Translation Resources
+		const target = result.result.resources.find(
+			(resource) => resource.locale === "ar-SA",
+		);
 
-Source: en-US
+		expect(source?.files.map((file) => file.key)).toEqual([
+			"admin/roles.json",
+			"admin/users.json",
+			"auth.json",
+			"common.json",
+			"dashboard/analytics/reports.json",
+			"dashboard/overview.json",
+			"notifications/email.json",
+			"settings.json",
+		]);
 
-en-US (8 files)
-  auth.json
-  common.json
-  settings.json
-  admin/
-    roles.json
-    users.json
-  dashboard/
-    overview.json
-    analytics/
-      reports.json
-  notifications/
-    email.json
-
-ar-SA (7 files)
-  auth.json
-  common.json
-  settings.json
-  admin/
-    roles.json
-    users.json
-  dashboard/
-    overview.json
-  notifications/
-    email.json
-
-fr-FR (6 files)
-  auth.json
-  common.json
-  settings.json
-  admin/
-    users.json
-  dashboard/
-    overview.json
-  notifications/
-    email.json
-
-de-DE (4 files)
-  auth.json
-  common.json
-  admin/
-    users.json
-  dashboard/
-    overview.json`);
+		expect(target?.files.map((file) => file.key)).toEqual([
+			"admin/roles.json",
+			"admin/users.json",
+			"auth.json",
+			"common.json",
+			"dashboard/overview.json",
+			"notifications/email.json",
+			"settings.json",
+		]);
 	});
 
 	it("lists file layout resources", async () => {
-		const config = defineConfig({
+		const fileConfig = defineConfig({
 			directory: "tests/app/i18n/files",
 			layout: TranslationLayout.files,
 			source: "en-US",
 			locales: ["ar-SA"],
 		});
 
-		const result = await runListCommand(config);
+		const result = await runListCommand(fileConfig);
 
 		expect(result.exitCode).toBe(0);
 
-		expect(result.output).toBe(`Translation Resources
+		expect(result.result.source).toBe("en-US");
 
-Source: en-US
+		expect(result.result.resources).toHaveLength(2);
 
-en-US (1 file)
+		expect(
+			result.result.resources.map((resource) => ({
+				locale: resource.locale,
+				files: resource.files.length,
+			})),
+		).toEqual([
+			{
+				locale: "en-US",
+				files: 1,
+			},
+			{
+				locale: "ar-SA",
+				files: 1,
+			},
+		]);
 
-ar-SA (1 file)`);
-	});
-
-	it("lists file layout resources with files", async () => {
-		const config = defineConfig({
-			directory: "tests/app/i18n/files",
-			layout: TranslationLayout.files,
-			source: "en-US",
-			locales: ["ar-SA"],
-		});
-
-		const result = await runListCommand(config, {
-			showFiles: true,
-		});
-
-		expect(result.exitCode).toBe(0);
-
-		expect(result.output).toBe(`Translation Resources
-
-Source: en-US
-
-en-US (1 file)
-  en-US.json
-
-ar-SA (1 file)
-  ar-SA.json`);
+		expect(
+			result.result.resources.flatMap((resource) =>
+				resource.files.map((file) => file.key),
+			),
+		).toEqual(["en-US.json", "ar-SA.json"]);
 	});
 });

@@ -114,7 +114,7 @@ export function printAnalyzeReport(
 ): void {
 	const showFiles = options.showFiles ?? false;
 
-	logger.text(MESSAGES.title, {
+	logger.text(MESSAGES.titleAnalysis, {
 		bold: true,
 	});
 

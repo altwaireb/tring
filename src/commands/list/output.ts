@@ -1,6 +1,8 @@
 import type { ListApplicationResult } from "@/app";
+import { Gap, Indent, logger } from "@/logger";
+import { MESSAGES } from "@/messages";
 
-export interface FormatTranslationResourcesOptions {
+export interface PrintListResourcesOptions {
 	showFiles?: boolean;
 }
 
@@ -45,13 +47,15 @@ function createTree(files: string[]): FileTreeNode {
 	return root;
 }
 
-function appendTree(lines: string[], node: FileTreeNode, depth: number): void {
-	const indentation = "  ".repeat(depth);
+function printTree(node: FileTreeNode, depth: number): void {
+	const indent = depth * Indent.level1;
 
 	const files = [...node.files].sort((a, b) => a.localeCompare(b));
 
 	for (const file of files) {
-		lines.push(`${indentation}${file}`);
+		logger.text(file, {
+			indent,
+		});
 	}
 
 	const directories = [...node.directories.entries()].sort(([a], [b]) =>
@@ -59,28 +63,38 @@ function appendTree(lines: string[], node: FileTreeNode, depth: number): void {
 	);
 
 	for (const [directory, child] of directories) {
-		lines.push(`${indentation}${directory}/`);
-		appendTree(lines, child, depth + 1);
+		logger.text(`${directory}/`, {
+			indent,
+		});
+
+		printTree(child, depth + 1);
 	}
 }
 
-export function formatTranslationResources(
+function printResource(locale: string, fileCount: number): void {
+	const fileLabel = fileCount === 1 ? "file" : "files";
+
+	logger.text(`${locale} (${fileCount} ${fileLabel})`, {
+		bold: true,
+	});
+}
+
+export function printListResources(
 	result: ListApplicationResult,
-	options: FormatTranslationResourcesOptions = {},
-): string {
-	const lines: string[] = [
-		"Translation Resources",
-		"",
-		`Source: ${result.source}`,
-	];
+	options: PrintListResourcesOptions = {},
+): void {
+	logger.text(MESSAGES.translationResources, {
+		bold: true,
+	});
+
+	logger.separate(MESSAGES.source, result.source, {
+		gap: Gap.level1,
+	});
 
 	for (const resource of result.resources) {
-		const fileLabel = resource.files.length === 1 ? "file" : "files";
+		logger.newLine();
 
-		lines.push(
-			"",
-			`${resource.locale} (${resource.files.length} ${fileLabel})`,
-		);
+		printResource(resource.locale, resource.files.length);
 
 		if (!options.showFiles) {
 			continue;
@@ -88,8 +102,6 @@ export function formatTranslationResources(
 
 		const tree = createTree(resource.files.map((file) => file.key));
 
-		appendTree(lines, tree, 1);
+		printTree(tree, 1);
 	}
-
-	return lines.join("\n");
 }

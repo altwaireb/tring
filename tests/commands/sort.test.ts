@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { TranslationSortResult } from "@/app";
 import { runSortCommand } from "@/cli/commands/sort";
@@ -16,17 +16,11 @@ describe("sort command", () => {
 	const config = createConfig();
 
 	beforeEach(() => {
-		vi.spyOn(console, "log").mockImplementation(() => {});
-
 		vi.clearAllMocks();
 
 		mocks.sortApplication.mockResolvedValue({
 			results: createResults(),
 		});
-	});
-
-	afterEach(() => {
-		vi.restoreAllMocks();
 	});
 
 	it("sorts translation files", async () => {
@@ -38,12 +32,6 @@ describe("sort command", () => {
 			exitCode: 0,
 			results: createResults(),
 		});
-	});
-
-	it("prints the sort result", async () => {
-		await runSortCommand(config);
-
-		expect(console.log).toHaveBeenCalled();
 	});
 
 	it("reports when all translation files are already sorted", async () => {
@@ -62,8 +50,6 @@ describe("sort command", () => {
 			exitCode: 0,
 			results,
 		});
-
-		expect(console.log).toHaveBeenCalled();
 	});
 
 	it("returns modified and unmodified files", async () => {

@@ -18,7 +18,7 @@ export type Gap = (typeof Gap)[keyof typeof Gap];
 
 export interface LoggerOptions {
 	bold?: boolean;
-	indent?: Indent;
+	indent?: Indent | number;
 }
 
 export interface TextWithHintOptions extends LoggerOptions {

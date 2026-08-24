@@ -19,7 +19,7 @@ function applyOptions(message: string, options: LoggerOptions): string {
 	return output;
 }
 
-function applyIndent(message: string, indent: Indent = 0): string {
+function applyIndent(message: string, indent: Indent | number = 0): string {
 	return `${" ".repeat(indent)}${message}`;
 }
 

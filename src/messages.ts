@@ -1,5 +1,7 @@
 export const MESSAGES = {
-	title: "Translation Analysis",
+	titleAnalysis: "Translation Analysis",
+	translationResources: "Translation Resources",
+
 	source: "Source",
 	target: "Target",
 
@@ -18,4 +20,10 @@ export const MESSAGES = {
 
 	localeNotConfigured: (locale: string): string =>
 		`Locale "${locale}" is not configured. tring.config.ts`,
+
+	sortTitle: "Translation Sort",
+	sortAllSorted: "All translation files are already sorted.",
+	sortSorted: (count: number): string =>
+		`Sorted ${count} translation file${count === 1 ? "" : "s"}.`,
+	sortModified: "Modified",
 } as const;

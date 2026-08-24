@@ -2,6 +2,9 @@ import { defineCommand } from "citty";
 
 import { runSortCommand } from "@/cli/commands/sort";
 import { loadTringConfig } from "@/config";
+import { logger } from "@/logger";
+
+import { printSortResults } from "./output";
 
 export default defineCommand({
 	meta: {
@@ -29,19 +32,15 @@ export default defineCommand({
 		const result = await loadTringConfig();
 
 		if (!result.config) {
-			console.error(
-				"Tring configuration file was not found. Run `tring init`.",
-			);
-
+			logger.error("Tring configuration file was not found. Run `tring init`.");
 			process.exitCode = 1;
 			return;
 		}
 
 		if (args.file !== undefined && args.locale !== undefined) {
-			console.error(
+			logger.error(
 				"The `--file` and `--locale` options cannot be used together.",
 			);
-
 			process.exitCode = 1;
 			return;
 		}
@@ -52,9 +51,11 @@ export default defineCommand({
 				...(args.locale !== undefined && { locale: args.locale }),
 			});
 
+			printSortResults(command.results);
+
 			process.exitCode = command.exitCode;
 		} catch (error) {
-			console.error(error instanceof Error ? error.message : String(error));
+			logger.error(error instanceof Error ? error.message : String(error));
 
 			process.exitCode = 1;
 		}

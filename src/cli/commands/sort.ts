@@ -1,11 +1,15 @@
 import { type SortApplicationOptions, sortApplication } from "@/app";
 import type { TringConfig } from "@/config";
-import { formatTranslationSort } from "@/translation";
+
+export interface SortCommandResult {
+	exitCode: number;
+	results: Awaited<ReturnType<typeof sortApplication>>["results"];
+}
 
 export async function runSortCommand(
 	config: TringConfig,
 	options: SortApplicationOptions = {},
-) {
+): Promise<SortCommandResult> {
 	if (options.file !== undefined && options.locale !== undefined) {
 		throw new Error(
 			'The "--file" option cannot be used together with "--locale".',
@@ -13,9 +17,6 @@ export async function runSortCommand(
 	}
 
 	const result = await sortApplication(config, options);
-
-	console.log();
-	console.log(formatTranslationSort(result.results));
 
 	return {
 		exitCode: 0,

@@ -11,7 +11,6 @@ export {
 } from "./compare";
 export { findTranslationKeyResources } from "./find-key";
 export {
-	type ListApplicationOptions,
 	type ListApplicationResult,
 	listApplication,
 	type TranslationResourceSummary,

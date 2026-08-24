@@ -1,21 +1,18 @@
-import { listApplication } from "@/app";
+import { type ListApplicationResult, listApplication } from "@/app";
 import type { TringConfig } from "@/config";
-import { formatTranslationResources } from "@/translation";
 
-export interface ListCommandOptions {
-	showFiles?: boolean;
+export interface ListCommandResult {
+	exitCode: number;
+	result: ListApplicationResult;
 }
 
 export async function runListCommand(
 	config: TringConfig,
-	options: ListCommandOptions = {},
-) {
+): Promise<ListCommandResult> {
 	const result = await listApplication(config);
 
 	return {
 		exitCode: 0,
-		output: formatTranslationResources(result, {
-			showFiles: options.showFiles ?? false,
-		}),
+		result,
 	};
 }

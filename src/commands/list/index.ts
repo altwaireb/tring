@@ -4,6 +4,8 @@ import { runListCommand } from "@/cli/commands/list";
 import { loadTringConfig } from "@/config";
 import { createSpinner } from "@/spinner";
 
+import { printListResources } from "./output";
+
 export default defineCommand({
 	meta: {
 		name: "list",
@@ -33,15 +35,13 @@ export default defineCommand({
 			return;
 		}
 
-		const command = await runListCommand(result.config, {
-			showFiles: args.showFiles ?? false,
-		});
+		const command = await runListCommand(result.config);
 
 		spinner.stop();
 
-		if (command.output) {
-			console.log(command.output);
-		}
+		printListResources(command.result, {
+			showFiles: args.showFiles ?? false,
+		});
 
 		process.exitCode = command.exitCode;
 	},
