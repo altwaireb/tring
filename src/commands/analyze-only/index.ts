@@ -1,7 +1,10 @@
 import { defineCommand } from "citty";
 
 import { runAnalyzeCommand } from "@/cli/commands/analyze";
+import { printAnalyzeReports } from "@/commands/analyze/output";
 import { loadTringConfig } from "@/config";
+import { logger } from "@/logger";
+import { MESSAGES } from "@/messages";
 import { createSpinner } from "@/spinner";
 
 export default defineCommand({
@@ -42,13 +45,20 @@ export default defineCommand({
 
 		const command = await runAnalyzeCommand(result.config, {
 			targetLocale: args.locale,
-			showFiles: args.showFiles ?? false,
 		});
 
 		spinner.stop();
 
-		if (command.output) {
-			console.log(command.output);
+		if (command.error) {
+			logger.error(MESSAGES.localeNotConfigured(command.error.targetLocale));
+			process.exitCode = command.exitCode;
+			return;
+		}
+
+		if (command.reports.length > 0) {
+			printAnalyzeReports(command.reports, {
+				showFiles: args.showFiles ?? false,
+			});
 		}
 
 		process.exitCode = command.exitCode;

@@ -47,10 +47,6 @@ export {
 	type TranslationReport,
 } from "./report";
 export {
-	type FormatTranslationReportOptions,
-	formatTranslationReport,
-} from "./report-format";
-export {
 	compareTranslationKeyNames,
 	isTranslationObjectSorted,
 	sortTranslationObject,

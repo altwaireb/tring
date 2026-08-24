@@ -253,3 +253,5 @@ export const logger = {
 		);
 	},
 };
+
+export { Gap, Indent } from "./types";

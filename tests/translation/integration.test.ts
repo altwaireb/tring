@@ -8,7 +8,6 @@ import {
 	analyzeTranslations,
 	createTranslationReport,
 	discoverTranslationFiles,
-	formatTranslationReport,
 } from "@/translation";
 
 const I18N_DIRECTORY = join(process.cwd(), "tests", "app", "i18n");
@@ -40,22 +39,13 @@ describe("translation analysis integration", () => {
 
 		const report = createTranslationReport(analysis);
 
-		const output = formatTranslationReport(report);
+		expect(report.source).toBe("en-US");
+		expect(report.target).toBe("ar-SA");
 
-		expect(output).toBe(
-			[
-				"Translation Analysis",
-				"",
-				"Source: en-US",
-				"Target: ar-SA",
-				"",
-				"Summary",
-				"  Files missing: 0",
-				"  Files extra: 0",
-				"  Keys missing: 0",
-				"  Extra keys: 0",
-			].join("\n"),
-		);
+		expect(report.summary.filesMissing).toBe(0);
+		expect(report.summary.filesExtra).toBe(0);
+		expect(report.summary.keysMissing).toBe(0);
+		expect(report.summary.extraKeys).toBe(0);
 	});
 
 	it("reports missing keys", async () => {
@@ -84,25 +74,17 @@ describe("translation analysis integration", () => {
 
 		const report = createTranslationReport(analysis);
 
-		const output = formatTranslationReport(report);
+		expect(report.source).toBe("en-US");
+		expect(report.target).toBe("ar-SA");
 
-		expect(output).toBe(
-			[
-				"Translation Analysis",
-				"",
-				"Source: en-US",
-				"Target: ar-SA",
-				"",
-				"Keys Missing",
-				"  ✗ forgot_password | ar-SA | auth.json",
-				"  ✗ create_account | ar-SA | auth.json",
-				"",
-				"Summary",
-				"  Files missing: 0",
-				"  Files extra: 0",
-				"  Keys missing: 2",
-				"  Extra keys: 0",
-			].join("\n"),
-		);
+		expect(report.keys.missing).toHaveLength(2);
+
+		expect(report.keys.missing.map((issue) => issue.key)).toEqual([
+			"forgot_password",
+			"create_account",
+		]);
+
+		expect(report.summary.keysMissing).toBe(2);
+		expect(report.summary.extraKeys).toBe(0);
 	});
 });
