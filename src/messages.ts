@@ -28,4 +28,5 @@ export const MESSAGES = {
 	sortModified: "Modified",
 
 	compareTitle: "Translation Comparison",
+	missingTitle: "Missing Translations",
 } as const;

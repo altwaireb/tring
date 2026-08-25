@@ -1,4 +1,9 @@
 import { missingApplication } from "@/app";
+import {
+	printMissingHeader,
+	printMissingIssues,
+	printMissingPagination,
+} from "@/commands/missing/output";
 import type { TringConfig } from "@/config";
 import { PAGE_SIZE } from "@/constants";
 import { paginationPrompt } from "@/prompt";
@@ -12,10 +17,15 @@ export interface MissingCommandOptions {
 	onlyEmpty?: boolean;
 }
 
+export interface MissingCommandResult {
+	exitCode: number;
+	issues: TranslationMissingIssue[];
+}
+
 export async function runMissingCommand(
 	config: TringConfig,
 	options: MissingCommandOptions = {},
-) {
+): Promise<MissingCommandResult> {
 	if (options.onlyEmpty && options.empty) {
 		throw new Error(
 			'The "--only-empty" option cannot be used together with "--empty".',
@@ -41,23 +51,15 @@ export async function runMissingCommand(
 	while (true) {
 		const currentPage = getTranslationPage(issues, page, PAGE_SIZE);
 
-		console.log();
-
 		if (page === 0) {
-			console.log("Missing Translations");
-			console.log();
-
-			printIssues(currentPage.items);
-		} else {
-			printIssues(currentPage.items);
+			printMissingHeader();
 		}
 
-		console.log();
-		console.log(
-			`Showing ${currentPage.shown} of ${currentPage.total} ${
-				options.onlyEmpty ? "empty" : "missing translations"
-			}`,
-		);
+		printMissingIssues(currentPage.items);
+
+		const label = options.onlyEmpty ? "empty" : "missing translations";
+
+		printMissingPagination(currentPage.shown, currentPage.total, label);
 
 		if (!currentPage.hasNext) {
 			break;
@@ -76,25 +78,4 @@ export async function runMissingCommand(
 		exitCode: 0,
 		issues,
 	};
-}
-
-function printIssues(issues: readonly TranslationMissingIssue[]) {
-	let currentResource: string | undefined;
-
-	for (const issue of issues) {
-		if (issue.resource.key !== currentResource) {
-			if (currentResource !== undefined) {
-				console.log();
-			}
-
-			console.log(issue.resource.key);
-			console.log();
-
-			currentResource = issue.resource.key;
-		}
-
-		const status = issue.isEmpty ? "EMPTY" : "MISSING";
-
-		console.log(`${issue.locale} │ ${issue.key} | ${status}`);
-	}
 }
