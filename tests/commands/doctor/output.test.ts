@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { DoctorCommandResult } from "@/commands/doctor/action";
+import type { DoctorCommandResult } from "@/cli/commands/doctor";
 import { printDoctorResult } from "@/commands/doctor/output";
 
 const logger = vi.hoisted(() => ({

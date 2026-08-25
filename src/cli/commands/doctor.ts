@@ -1,9 +1,9 @@
+import { checkConfiguration } from "@/commands/doctor/checks/configuration";
+import { checkLocales } from "@/commands/doctor/checks/locales";
+import type { CheckResult } from "@/commands/doctor/checks/result";
+import { checkTranslationDirectory } from "@/commands/doctor/checks/translation-directory";
+import { checkTranslationLayout } from "@/commands/doctor/checks/translation-layout";
 import { loadTringConfig } from "@/config";
-import { checkConfiguration } from "./checks/configuration";
-import { checkLocales } from "./checks/locales";
-import type { CheckResult } from "./checks/result";
-import { checkTranslationDirectory } from "./checks/translation-directory";
-import { checkTranslationLayout } from "./checks/translation-layout";
 
 export interface DoctorCommandResult {
 	checks: CheckResult[];

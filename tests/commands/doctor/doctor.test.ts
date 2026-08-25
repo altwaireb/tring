@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { runDoctor } from "@/commands/doctor/action";
+import { runDoctor } from "@/cli/commands/doctor";
 
 const loadTringConfig = vi.hoisted(() => vi.fn());
 const checkConfiguration = vi.hoisted(() => vi.fn());

@@ -1,5 +1,5 @@
+import type { DoctorCommandResult } from "@/cli/commands/doctor";
 import { logger } from "@/logger";
-import type { DoctorCommandResult } from "./action";
 
 export function printDoctorResult(result: DoctorCommandResult): void {
 	if (result.error) {

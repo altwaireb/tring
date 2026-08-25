@@ -1,6 +1,6 @@
 import { defineCommand } from "citty";
 
-import { runDoctor } from "./action";
+import { runDoctor } from "@/cli/commands/doctor";
 import { printDoctorResult } from "./output";
 
 export default defineCommand({
