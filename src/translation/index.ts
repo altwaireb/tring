@@ -14,10 +14,6 @@ export {
 	type TranslationFileComparison,
 } from "./compare-files";
 export {
-	formatTranslationComparison,
-	formatTranslationComparisonHeader,
-} from "./compare-format";
-export {
 	compareTranslationValues,
 	type TranslationValueComparison,
 } from "./compare-values";

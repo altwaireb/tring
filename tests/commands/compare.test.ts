@@ -4,7 +4,6 @@ const mocks = vi.hoisted(() => ({
 	compareApplication: vi.fn(),
 	compareResource: vi.fn(),
 	findTranslationKeyResources: vi.fn(),
-	paginationPrompt: vi.fn(),
 	search: vi.fn(),
 }));
 
@@ -15,7 +14,6 @@ vi.mock("@/app", () => ({
 }));
 
 vi.mock("@/prompt", () => ({
-	paginationPrompt: mocks.paginationPrompt,
 	search: mocks.search,
 }));
 
@@ -29,22 +27,14 @@ const config = defineConfig({
 	source: "en-US",
 	locales: ["ar-SA", "fr-FR", "de-DE"],
 });
-// test for directories layout
-describe("compare command", () => {
-	let logs: string[];
 
+describe("compare command", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
-
-		logs = [];
 
 		mocks.compareApplication.mockResolvedValue({
 			source: "en-US",
 			resources: [createResource("admin/users.json")],
-		});
-
-		vi.spyOn(console, "log").mockImplementation((...args) => {
-			logs.push(args.join(" "));
 		});
 	});
 
@@ -66,6 +56,8 @@ describe("compare command", () => {
 
 		expect(result.exitCode).toBe(0);
 		expect(result.resource).toBe(selectedResource);
+		expect(result.comparisons).toEqual(createComparisons(6));
+		expect(result.locales).toEqual(["en-US", "ar-SA", "fr-FR", "de-DE"]);
 
 		expect(mocks.search).toHaveBeenCalledTimes(1);
 
@@ -115,54 +107,24 @@ describe("compare command", () => {
 		]);
 	});
 
-	it("paginates comparison results", async () => {
+	it("returns all comparison results", async () => {
 		const selectedResource = createResource("admin/users.json");
+		const comparisons = createComparisons(17);
 
 		mocks.search.mockResolvedValue(selectedResource);
 
 		mocks.compareResource.mockResolvedValue({
 			resource: selectedResource,
-			comparisons: createComparisons(17),
+			comparisons,
 		});
-
-		mocks.paginationPrompt
-			.mockResolvedValueOnce("continue")
-			.mockResolvedValueOnce("continue");
 
 		const result = await runCompareCommand(config);
 
 		expect(result.exitCode).toBe(0);
 		expect(result.resource).toBe(selectedResource);
-
-		expect(mocks.paginationPrompt).toHaveBeenCalledTimes(2);
-
-		expect(logs).toContain("Showing 8 of 17 keys");
-		expect(logs).toContain("Showing 16 of 17 keys");
-		expect(logs).toContain("Showing 17 of 17 keys");
-	});
-
-	it("stops pagination when quit is selected", async () => {
-		const selectedResource = createResource("admin/users.json");
-
-		mocks.search.mockResolvedValue(selectedResource);
-
-		mocks.compareResource.mockResolvedValue({
-			resource: selectedResource,
-			comparisons: createComparisons(17),
-		});
-
-		mocks.paginationPrompt.mockResolvedValue("quit");
-
-		const result = await runCompareCommand(config);
-
-		expect(result.exitCode).toBe(0);
-		expect(result.resource).toBe(selectedResource);
-
-		expect(mocks.paginationPrompt).toHaveBeenCalledTimes(1);
-
-		expect(logs).toContain("Showing 8 of 17 keys");
-		expect(logs).not.toContain("Showing 16 of 17 keys");
-		expect(logs).not.toContain("Showing 17 of 17 keys");
+		expect(result.comparisons).toEqual(comparisons);
+		expect(result.comparisons).toHaveLength(17);
+		expect(result.locales).toEqual(["en-US", "ar-SA", "fr-FR", "de-DE"]);
 	});
 
 	it("selects a source resource directly when file is provided", async () => {
@@ -179,6 +141,7 @@ describe("compare command", () => {
 
 		expect(result.exitCode).toBe(0);
 		expect(result.resource).toEqual(resource);
+		expect(result.comparisons).toEqual(createComparisons(6));
 
 		expect(mocks.search).not.toHaveBeenCalled();
 		expect(mocks.compareResource).toHaveBeenCalledWith(config, resource);
@@ -234,15 +197,22 @@ describe("compare command", () => {
 		expect(result.exitCode).toBe(0);
 		expect(result.resource).toBe(selectedResource);
 
+		expect(result.comparisons).toEqual([
+			{
+				key: "status.active",
+				values: {
+					"en-US": "Active",
+					"ar-SA": "نشط",
+					"fr-FR": undefined,
+					"de-DE": undefined,
+				},
+			},
+		]);
+
 		expect(mocks.findTranslationKeyResources).toHaveBeenCalledWith(
 			config,
 			"status.active",
 		);
-
-		const output = logs.join("\n");
-
-		expect(output).toContain("key: status.active");
-		expect(output).not.toContain("key: title");
 	});
 
 	it("throws when the requested key does not exist", async () => {
@@ -303,13 +273,20 @@ describe("compare command", () => {
 		expect(result.exitCode).toBe(0);
 		expect(result.resource).toEqual(resource);
 
+		expect(result.comparisons).toEqual([
+			{
+				key: "status.active",
+				values: {
+					"en-US": "Active",
+					"ar-SA": "نشط",
+					"fr-FR": undefined,
+					"de-DE": undefined,
+				},
+			},
+		]);
+
 		expect(mocks.search).not.toHaveBeenCalled();
 		expect(mocks.compareResource).toHaveBeenCalledWith(config, resource);
-
-		const output = logs.join("\n");
-
-		expect(output).toContain("key: status.active");
-		expect(output).not.toContain("key: title");
 	});
 
 	it("selects the resource automatically when key exists in one file", async () => {
@@ -342,7 +319,19 @@ describe("compare command", () => {
 		});
 
 		expect(result.exitCode).toBe(0);
-		expect(result.resource).toEqual(resource);
+		expect(result.resource).toBe(resource);
+
+		expect(result.comparisons).toEqual([
+			{
+				key: "status.active",
+				values: {
+					"en-US": "Active",
+					"ar-SA": "نشط",
+					"fr-FR": undefined,
+					"de-DE": undefined,
+				},
+			},
+		]);
 
 		expect(mocks.findTranslationKeyResources).toHaveBeenCalledWith(
 			config,
@@ -389,7 +378,19 @@ describe("compare command", () => {
 		});
 
 		expect(result.exitCode).toBe(0);
-		expect(result.resource).toEqual(usersResource);
+		expect(result.resource).toBe(usersResource);
+
+		expect(result.comparisons).toEqual([
+			{
+				key: "status.active",
+				values: {
+					"en-US": "Active",
+					"ar-SA": "نشط",
+					"fr-FR": undefined,
+					"de-DE": undefined,
+				},
+			},
+		]);
 
 		expect(mocks.findTranslationKeyResources).toHaveBeenCalledWith(
 			config,
@@ -443,7 +444,6 @@ describe("compare command", () => {
 	});
 });
 
-// test for files layout
 describe("compare command (files layout)", () => {
 	const config = defineConfig({
 		directory: "tests/app/i18n/files",
@@ -452,22 +452,14 @@ describe("compare command (files layout)", () => {
 		locales: ["ar-SA"],
 	});
 
-	let logs: string[];
-
 	beforeEach(() => {
 		vi.clearAllMocks();
-
-		logs = [];
 
 		const resource = createFileResource();
 
 		mocks.compareApplication.mockResolvedValue({
 			source: "en-US",
 			resources: [resource],
-		});
-
-		vi.spyOn(console, "log").mockImplementation((...args) => {
-			logs.push(args.join(" "));
 		});
 	});
 
@@ -504,6 +496,7 @@ describe("compare command (files layout)", () => {
 
 		expect(result.exitCode).toBe(0);
 		expect(result.resource).toEqual(resource);
+		expect(result.comparisons).toHaveLength(2);
 
 		expect(mocks.search).toHaveBeenCalledTimes(1);
 
@@ -553,10 +546,18 @@ describe("compare command (files layout)", () => {
 		expect(result.exitCode).toBe(0);
 		expect(result.resource).toEqual(resource);
 
+		expect(result.comparisons).toEqual([
+			{
+				key: "auth.title",
+				values: {
+					"en-US": "Authentication",
+					"ar-SA": "المصادقة",
+				},
+			},
+		]);
+
 		expect(mocks.search).not.toHaveBeenCalled();
 		expect(mocks.compareResource).toHaveBeenCalledWith(config, resource);
-
-		expect(logs.join("\n")).toContain("auth.title");
 	});
 
 	it("filters the file comparison by key", async () => {
@@ -591,6 +592,16 @@ describe("compare command (files layout)", () => {
 		expect(result.exitCode).toBe(0);
 		expect(result.resource).toEqual(resource);
 
+		expect(result.comparisons).toEqual([
+			{
+				key: "common.save",
+				values: {
+					"en-US": "Save",
+					"ar-SA": "حفظ",
+				},
+			},
+		]);
+
 		expect(mocks.findTranslationKeyResources).toHaveBeenCalledWith(
 			config,
 			"common.save",
@@ -598,11 +609,6 @@ describe("compare command (files layout)", () => {
 
 		expect(mocks.search).not.toHaveBeenCalled();
 		expect(mocks.compareResource).toHaveBeenCalledWith(config, resource);
-
-		const output = logs.join("\n");
-
-		expect(output).toContain("key: common.save");
-		expect(output).not.toContain("key: auth.title");
 	});
 
 	it("selects the file automatically when key exists in the source locale file", async () => {
@@ -629,6 +635,16 @@ describe("compare command (files layout)", () => {
 
 		expect(result.exitCode).toBe(0);
 		expect(result.resource).toEqual(resource);
+
+		expect(result.comparisons).toEqual([
+			{
+				key: "auth.title",
+				values: {
+					"en-US": "Authentication",
+					"ar-SA": "المصادقة",
+				},
+			},
+		]);
 
 		expect(mocks.findTranslationKeyResources).toHaveBeenCalledWith(
 			config,

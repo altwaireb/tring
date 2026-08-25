@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import { compareApplication, compareResource } from "@/app";
 import { defineConfig, TranslationLayout } from "@/config";
-import { formatTranslationComparison } from "@/translation";
 
 describe("compare", () => {
 	it("returns only resources from the source locale", async () => {
@@ -150,75 +149,5 @@ describe("compare", () => {
 
 		expect(result.resource).toBe(resource);
 		expect(result.comparisons.length).toBeGreaterThan(0);
-	});
-
-	it("formats a source resource comparison across locales", async () => {
-		const config = defineConfig({
-			directory: "tests/app/i18n/nested",
-			layout: TranslationLayout.directories,
-			source: "en-US",
-			locales: ["ar-SA", "fr-FR", "de-DE"],
-		});
-
-		const resources = await compareApplication(config);
-
-		const resource = resources.resources.find(
-			(resource) => resource.key === "admin/users.json",
-		);
-
-		expect(resource).toBeDefined();
-
-		if (!resource) {
-			throw new Error("Expected admin/users.json resource.");
-		}
-
-		const result = await compareResource(config, resource);
-
-		const output = formatTranslationComparison(result.comparisons, [
-			config.source,
-			...config.locales,
-		]);
-
-		expect(output).toBe(`key: title
-
-en-US │ Users
-ar-SA │ المستخدمون
-fr-FR │ Utilisateurs
-de-DE │ Benutzer
-
-key: create
-
-en-US │ Create user
-ar-SA │ إنشاء مستخدم
-fr-FR │ Créer un utilisateur
-de-DE │ Benutzer erstellen
-
-key: edit
-
-en-US │ Edit user
-ar-SA │ تعديل المستخدم
-fr-FR │ Modifier l'utilisateur
-de-DE │ Benutzer bearbeiten
-
-key: delete
-
-en-US │ Delete user
-ar-SA │ حذف المستخدم
-fr-FR │ Supprimer l'utilisateur
-de-DE │ Benutzer löschen
-
-key: status.active
-
-en-US │ Active
-ar-SA │ نشط
-fr-FR │ (⚠ MISSING)
-de-DE │ (⚠ MISSING)
-
-key: status.inactive
-
-en-US │ Inactive
-ar-SA │ غير نشط
-fr-FR │ (⚠ MISSING)
-de-DE │ (⚠ MISSING)`);
 	});
 });

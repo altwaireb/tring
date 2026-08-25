@@ -2,6 +2,16 @@ import { defineCommand } from "citty";
 
 import { runCompareCommand } from "@/cli/commands/compare";
 import { loadTringConfig } from "@/config";
+import { PAGE_SIZE } from "@/constants";
+import { logger } from "@/logger";
+import { paginationPrompt } from "@/prompt";
+import { getTranslationPage } from "@/translation";
+
+import {
+	printCompareHeader,
+	printComparePagination,
+	printTranslationComparisons,
+} from "./output";
 
 export default defineCommand({
 	meta: {
@@ -28,9 +38,7 @@ export default defineCommand({
 		const result = await loadTringConfig();
 
 		if (!result.config) {
-			console.error(
-				"Tring configuration file was not found. Run `tring init`.",
-			);
+			logger.error("Tring configuration file was not found. Run `tring init`.");
 
 			process.exitCode = 1;
 			return;
@@ -41,8 +49,44 @@ export default defineCommand({
 			...(args.key !== undefined && { key: args.key }),
 		};
 
-		const command = await runCompareCommand(result.config, options);
+		try {
+			const command = await runCompareCommand(result.config, options);
 
-		process.exitCode = command.exitCode;
+			let page = 0;
+
+			while (true) {
+				const currentPage = getTranslationPage(
+					command.comparisons,
+					page,
+					PAGE_SIZE,
+				);
+
+				if (page === 0) {
+					printCompareHeader(command.resource.key);
+				}
+
+				printTranslationComparisons(currentPage.items, command.locales);
+
+				printComparePagination(currentPage.shown, currentPage.total);
+
+				if (!currentPage.hasNext) {
+					break;
+				}
+
+				const action = await paginationPrompt();
+
+				if (action === "quit") {
+					break;
+				}
+
+				page++;
+			}
+
+			process.exitCode = command.exitCode;
+		} catch (error) {
+			logger.error(error instanceof Error ? error.message : String(error));
+
+			process.exitCode = 1;
+		}
 	},
 });

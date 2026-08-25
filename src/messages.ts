@@ -26,4 +26,6 @@ export const MESSAGES = {
 	sortSorted: (count: number): string =>
 		`Sorted ${count} translation file${count === 1 ? "" : "s"}.`,
 	sortModified: "Modified",
+
+	compareTitle: "Translation Comparison",
 } as const;

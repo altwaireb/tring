@@ -5,11 +5,10 @@ import {
 } from "@/app";
 import type { TringConfig } from "@/config";
 import { PAGE_SIZE } from "@/constants";
-import { paginationPrompt, search } from "@/prompt";
-import {
-	formatTranslationComparison,
-	getTranslationPage,
-	type TranslationFile,
+import { search } from "@/prompt";
+import type {
+	TranslationFile,
+	TranslationValueComparison,
 } from "@/translation";
 
 export interface CompareCommandOptions {
@@ -17,10 +16,17 @@ export interface CompareCommandOptions {
 	key?: string;
 }
 
+export interface CompareCommandResult {
+	exitCode: number;
+	resource: TranslationFile;
+	comparisons: TranslationValueComparison[];
+	locales: string[];
+}
+
 export async function runCompareCommand(
 	config: TringConfig,
 	options: CompareCommandOptions = {},
-) {
+): Promise<CompareCommandResult> {
 	const result = await compareApplication(config);
 
 	let resource: TranslationFile;
@@ -117,45 +123,10 @@ export async function runCompareCommand(
 			)
 		: comparison.comparisons;
 
-	let page = 0;
-
-	while (true) {
-		const currentPage = getTranslationPage(comparisons, page, PAGE_SIZE);
-
-		console.log();
-
-		if (page === 0) {
-			console.log("Translation Comparison");
-			console.log();
-			console.log(resource.key);
-			console.log();
-		}
-
-		console.log(
-			formatTranslationComparison(currentPage.items, [
-				config.source,
-				...config.locales,
-			]),
-		);
-
-		console.log();
-		console.log(`Showing ${currentPage.shown} of ${currentPage.total} keys`);
-
-		if (!currentPage.hasNext) {
-			break;
-		}
-
-		const action = await paginationPrompt();
-
-		if (action === "quit") {
-			break;
-		}
-
-		page++;
-	}
-
 	return {
 		exitCode: 0,
 		resource,
+		comparisons,
+		locales: [config.source, ...config.locales],
 	};
 }
