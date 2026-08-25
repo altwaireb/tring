@@ -1,59 +1,79 @@
 import { loadTringConfig } from "@/config";
-import { logger } from "@/logger";
 import { checkConfiguration } from "./checks/configuration";
 import { checkLocales } from "./checks/locales";
+import type { CheckResult } from "./checks/result";
 import { checkTranslationDirectory } from "./checks/translation-directory";
 import { checkTranslationLayout } from "./checks/translation-layout";
 
-export async function runDoctor(): Promise<boolean> {
+export interface DoctorCommandResult {
+	checks: CheckResult[];
+	success: boolean;
+	error?: string;
+}
+
+export async function runDoctor(): Promise<DoctorCommandResult> {
 	try {
 		const result = await loadTringConfig();
 
 		if (!result.configFile || !result.config) {
-			logger.error("Tring configuration file was not found. Run `tring init`.");
-
-			return false;
+			return {
+				checks: [],
+				success: false,
+				error: "Tring configuration file was not found. Run `tring init`.",
+			};
 		}
+
+		const checks: CheckResult[] = [];
 
 		const configuration = checkConfiguration(result.configFile);
+		checks.push(configuration);
 
 		if (!configuration.success) {
-			logger.error(configuration.message);
-			return false;
+			return {
+				checks,
+				success: false,
+			};
 		}
-
-		logger.success(configuration.message);
 
 		const translationDirectory = await checkTranslationDirectory(result.config);
+		checks.push(translationDirectory);
 
 		if (!translationDirectory.success) {
-			logger.error(translationDirectory.message);
-			return false;
+			return {
+				checks,
+				success: false,
+			};
 		}
-
-		logger.success(translationDirectory.message);
 
 		const translationLayout = await checkTranslationLayout(result.config);
+		checks.push(translationLayout);
 
 		if (!translationLayout.success) {
-			logger.error(translationLayout.message);
-			return false;
+			return {
+				checks,
+				success: false,
+			};
 		}
-
-		logger.success(translationLayout.message);
 
 		const locales = await checkLocales(result.config);
+		checks.push(locales);
 
 		if (!locales.success) {
-			logger.error(locales.message);
-			return false;
+			return {
+				checks,
+				success: false,
+			};
 		}
 
-		logger.success(locales.message);
-
-		return true;
+		return {
+			checks,
+			success: true,
+		};
 	} catch {
-		logger.error("Failed to load Tring configuration. Run `tring init`.");
-		return false;
+		return {
+			checks: [],
+			success: false,
+			error: "Failed to load Tring configuration. Run `tring init`.",
+		};
 	}
 }
