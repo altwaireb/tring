@@ -1,5 +1,5 @@
 import { type SyncApplicationResult, syncApplication } from "@/app";
-import type { TringConfig } from "@/config";
+import { TranslationLayout, type TringConfig } from "@/config";
 import {
 	applyTranslationSyncPlan,
 	type TranslationSyncWriteResult,
@@ -9,6 +9,8 @@ export interface SyncCommandOptions {
 	dryRun?: boolean;
 	apply?: boolean;
 	empty?: boolean;
+	locale?: string;
+	file?: string;
 }
 
 export interface SyncCommandResult {
@@ -37,7 +39,27 @@ export async function runSyncCommand(
 		throw new Error('The "--empty" option requires "--apply".');
 	}
 
-	const result = await syncApplication(config);
+	if (options.locale && !config.locales.includes(options.locale)) {
+		throw new Error(`The locale "${options.locale}" is not configured.`);
+	}
+
+	if (options.file && config.layout === TranslationLayout.files) {
+		throw new Error(
+			'The "--file" option cannot be used with the "files" translation layout.',
+		);
+	}
+
+	const result =
+		options.locale === undefined && options.file === undefined
+			? await syncApplication(config)
+			: await syncApplication(config, {
+					...(options.locale !== undefined && {
+						locale: options.locale,
+					}),
+					...(options.file !== undefined && {
+						file: options.file,
+					}),
+				});
 
 	if (!options.apply) {
 		return {

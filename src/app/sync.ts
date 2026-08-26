@@ -14,18 +14,25 @@ export interface SyncApplicationResult {
 	plan: TranslationSyncWritePlan;
 }
 
+export interface SyncApplicationOptions {
+	locale?: string;
+	file?: string;
+}
+
 export async function syncApplication(
 	config: TringConfig,
+	options: SyncApplicationOptions = {},
 ): Promise<SyncApplicationResult> {
 	const files = await discoverTranslationFiles(config);
 
 	const sourceFiles = files
 		.filter((file) => file.locale === config.source)
+		.filter((file) => options.file === undefined || file.key === options.file)
 		.sort((a, b) => a.key.localeCompare(b.key));
 
-	const targetFiles = files.filter((file) =>
-		config.locales.includes(file.locale),
-	);
+	const locales = options.locale ? [options.locale] : config.locales;
+
+	const targetFiles = files.filter((file) => locales.includes(file.locale));
 
 	const sourceDocuments = await Promise.all(
 		sourceFiles.map((file) => readTranslationFile(file)),
@@ -47,7 +54,7 @@ export async function syncApplication(
 		const plan = createTranslationSyncPlan(
 			sourceDocument,
 			sourceTargetDocuments,
-			config.locales,
+			locales,
 		);
 
 		for (const file of plan.files) {

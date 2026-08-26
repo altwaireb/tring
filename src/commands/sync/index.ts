@@ -35,6 +35,19 @@ export default defineCommand({
 			alias: "e",
 			required: false,
 		},
+		locale: {
+			type: "string",
+			description: "Synchronize only the specified locale.",
+			alias: "l",
+			required: false,
+		},
+
+		file: {
+			type: "string",
+			description: "Synchronize only the specified translation file.",
+			alias: "f",
+			required: false,
+		},
 	},
 
 	async run({ args }) {
@@ -56,6 +69,12 @@ export default defineCommand({
 				}),
 				...(args.empty !== undefined && {
 					empty: args.empty,
+				}),
+				...(args.locale !== undefined && {
+					locale: args.locale,
+				}),
+				...(args.file !== undefined && {
+					file: args.file,
 				}),
 			});
 

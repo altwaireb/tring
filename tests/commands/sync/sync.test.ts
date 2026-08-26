@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { SyncApplicationResult } from "@/app";
 import { runSyncCommand } from "@/cli/commands/sync";
-import type { TringConfig } from "@/config";
+import { TranslationLayout, type TringConfig } from "@/config";
 import type { TranslationSyncWriteResult } from "@/translation";
 
 const mocks = vi.hoisted(() => ({
@@ -140,13 +140,71 @@ describe("sync command", () => {
 		expect(mocks.syncApplication).not.toHaveBeenCalled();
 		expect(mocks.applyTranslationSyncPlan).not.toHaveBeenCalled();
 	});
+
+	it("creates a sync plan for a specific locale", async () => {
+		await runSyncCommand(config, {
+			locale: "de-DE",
+		});
+
+		expect(mocks.syncApplication).toHaveBeenCalledWith(config, {
+			locale: "de-DE",
+		});
+	});
+
+	it("creates a sync plan for a specific file", async () => {
+		await runSyncCommand(config, {
+			file: "admin/users.json",
+		});
+
+		expect(mocks.syncApplication).toHaveBeenCalledWith(config, {
+			file: "admin/users.json",
+		});
+	});
+
+	it("creates a sync plan for a specific locale and file", async () => {
+		await runSyncCommand(config, {
+			locale: "de-DE",
+			file: "admin/users.json",
+		});
+
+		expect(mocks.syncApplication).toHaveBeenCalledWith(config, {
+			locale: "de-DE",
+			file: "admin/users.json",
+		});
+	});
+
+	it('rejects an unknown "--locale"', async () => {
+		await expect(
+			runSyncCommand(config, {
+				locale: "es-ES",
+			}),
+		).rejects.toThrow('The locale "es-ES" is not configured.');
+
+		expect(mocks.syncApplication).not.toHaveBeenCalled();
+	});
+
+	it('rejects "--file" with the files layout', async () => {
+		const filesConfig = createConfig({
+			layout: TranslationLayout.files,
+		});
+
+		await expect(
+			runSyncCommand(filesConfig, {
+				file: "admin/users.json",
+			}),
+		).rejects.toThrow(
+			'The "--file" option cannot be used with the "files" translation layout.',
+		);
+
+		expect(mocks.syncApplication).not.toHaveBeenCalled();
+	});
 });
 
 function createConfig(overrides: Partial<TringConfig> = {}): TringConfig {
 	return {
 		source: "en-US",
 		locales: ["ar-SA", "fr-FR", "de-DE"],
-		layout: "directories",
+		layout: TranslationLayout.directories,
 		path: "tests/app/i18n/nested",
 		...overrides,
 	} as TringConfig;
