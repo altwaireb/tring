@@ -25,3 +25,5 @@ export {
 	sortApplication,
 	type TranslationSortResult,
 } from "./sort";
+export type { SyncApplicationResult } from "./sync";
+export { syncApplication } from "./sync";

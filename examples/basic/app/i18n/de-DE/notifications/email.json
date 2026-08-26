@@ -1,0 +1,10 @@
+{
+	"welcome": {
+		"subject": "",
+		"body": ""
+	},
+	"password_reset": {
+		"subject": "",
+		"body": ""
+	}
+}

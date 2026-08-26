@@ -98,6 +98,34 @@ function formatSeparateMark(
 	return `${" ".repeat(indent)}${color(icon)} ${chalk.white(output)}`;
 }
 
+function formatSeparateLines(
+	symbol: string,
+	message: string,
+	messages: string | string[],
+	options: SeparateOptions = {},
+	color: (message: string) => string,
+): string {
+	const items = Array.isArray(messages) ? messages : [messages];
+
+	const lines = [
+		`${color(symbol)} ${message}`,
+		...items.map((item) => `  ${item}`),
+	];
+
+	return formatMessage(lines.join("\n"), options);
+}
+
+function formatLabelValue(
+	label: string,
+	value: string,
+	options: LoggerOptions,
+): string {
+	const labelWidth = 26;
+	const formattedLabel = label.padEnd(labelWidth);
+
+	return formatMessage(`${formattedLabel} : ${chalk.cyan(value)}`, options);
+}
+
 export const logger = {
 	newLine(): void {
 		console.log();
@@ -251,6 +279,68 @@ export const logger = {
 				chalk.white,
 			),
 		);
+	},
+
+	plus(
+		message: string,
+		messages: string | string[],
+		options: SeparateOptions = {},
+		inline = false,
+	): void {
+		if (inline) {
+			console.log(
+				formatSeparateMark(
+					SYMBOLS.plus,
+					message,
+					messages,
+					options,
+					chalk.green,
+				),
+			);
+			return;
+		}
+
+		console.log(
+			formatSeparateLines(
+				SYMBOLS.plus,
+				message,
+				messages,
+				options,
+				chalk.green,
+			),
+		);
+	},
+
+	minus(
+		message: string,
+		messages: string | string[],
+		options: SeparateOptions = {},
+		inline = false,
+	): void {
+		if (inline) {
+			console.log(
+				formatSeparateMark(
+					SYMBOLS.minus,
+					message,
+					messages,
+					options,
+					chalk.red,
+				),
+			);
+			return;
+		}
+
+		console.log(
+			formatSeparateLines(SYMBOLS.minus, message, messages, options, chalk.red),
+		);
+	},
+
+	labelValue(
+		label: string,
+		value: string | number,
+		options: LoggerOptions = {},
+	): void {
+		console.log(formatLabelValue(label, String(value), options));
 	},
 };
 

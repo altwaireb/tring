@@ -1,0 +1,15 @@
+{
+	"title": "",
+	"account": {
+		"title": "",
+		"email": ""
+	},
+	"security": {
+		"title": "",
+		"password": ""
+	},
+	"status": {
+		"active": "",
+		"inactive": ""
+	}
+}

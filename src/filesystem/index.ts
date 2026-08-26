@@ -1,3 +1,4 @@
+export { dirname } from "./dirname";
 export { exists } from "./exists";
 export { join } from "./join";
 export { mkdir } from "./mkdir";

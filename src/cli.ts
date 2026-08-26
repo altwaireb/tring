@@ -8,6 +8,7 @@ import init from "@/commands/init";
 import list from "@/commands/list";
 import missing from "@/commands/missing";
 import sort from "@/commands/sort";
+import sync from "@/commands/sync";
 import { pkg } from "./package";
 
 export const cli = defineCommand({
@@ -26,6 +27,7 @@ export const cli = defineCommand({
 		missing,
 		analyze,
 		"analyze-only": analyzeOnly,
+		sync,
 	},
 });
 

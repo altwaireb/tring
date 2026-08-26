@@ -330,4 +330,12 @@ describe("logger", () => {
 
 		expect(consoleLog).toHaveBeenCalled();
 	});
+
+	it("prints a label value", () => {
+		const consoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
+
+		logger.labelValue("files will be changed", 10);
+
+		expect(consoleLog).toHaveBeenCalledWith("files will be changed      : 10");
+	});
 });

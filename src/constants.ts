@@ -13,7 +13,9 @@ export const SYMBOLS = {
 	success: "✓",
 	error: "✗",
 	warning: "⚠",
-	bullet: "•",
 	info: "ℹ",
+	plus: "+",
+	minus: "-",
+	bullet: "•",
 	enterKey: "↵",
 } as const;

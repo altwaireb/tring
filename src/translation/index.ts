@@ -42,4 +42,17 @@ export {
 	isTranslationObjectSorted,
 	sortTranslationObject,
 } from "./sort";
+export {
+	createTranslationSyncPlan,
+	type TranslationSyncChange,
+	type TranslationSyncFile,
+	type TranslationSyncPlan,
+} from "./sync";
+export { applyTranslationSyncChanges } from "./sync-apply";
+export {
+	applyTranslationSyncPlan,
+	type TranslationSyncWriteFile,
+	type TranslationSyncWritePlan,
+	type TranslationSyncWriteResult,
+} from "./sync-write";
 export { getTranslationValue } from "./values";
