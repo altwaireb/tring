@@ -2,9 +2,5 @@
 	"title": "Utilisateurs",
 	"create": "Créer un utilisateur",
 	"edit": "Modifier l'utilisateur",
-	"delete": "Supprimer l'utilisateur",
-	"status": {
-		"active": "",
-		"inactive": ""
-	}
+	"delete": "Supprimer l'utilisateur"
 }
