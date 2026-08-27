@@ -1,5 +1,10 @@
 import { addApplication } from "@/app";
-import { TranslationLayout, type TringConfig } from "@/config";
+import {
+	addLocaleToConfig,
+	hasLocaleInConfig,
+	TranslationLayout,
+	type TringConfig,
+} from "@/config";
 import {
 	applyTranslationAddPlan,
 	type TranslationAddWriteResult,
@@ -26,8 +31,10 @@ export async function runAddCommand(
 		throw new Error('Either "--locale" or "--file" must be specified.');
 	}
 
-	if (options.locale && !config.locales.includes(options.locale)) {
-		throw new Error(`The locale "${options.locale}" is not configured.`);
+	if (options.locale && options.file) {
+		throw new Error(
+			'The "--locale" and "--file" options cannot be used together.',
+		);
 	}
 
 	if (options.file && config.layout === TranslationLayout.files) {
@@ -36,7 +43,18 @@ export async function runAddCommand(
 		);
 	}
 
-	const result = await addApplication(config, {
+	let effectiveConfig = config;
+
+	if (options.locale && !(await hasLocaleInConfig(options.locale))) {
+		await addLocaleToConfig(options.locale);
+
+		effectiveConfig = {
+			...config,
+			locales: [...config.locales, options.locale],
+		};
+	}
+
+	const result = await addApplication(effectiveConfig, {
 		...(options.locale !== undefined && {
 			locale: options.locale,
 		}),
@@ -46,7 +64,7 @@ export async function runAddCommand(
 	});
 
 	const writeResult = await applyTranslationAddPlan(
-		config,
+		effectiveConfig,
 		result.plan,
 		options.empty ?? false,
 	);

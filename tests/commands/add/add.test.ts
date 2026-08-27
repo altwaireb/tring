@@ -5,8 +5,16 @@ import { runAddCommand } from "@/cli/commands/add";
 import { defineConfig, TranslationLayout } from "@/config";
 import { applyTranslationAddPlan } from "@/translation";
 
+const hasLocaleInConfig = vi.hoisted(() => vi.fn());
+const addLocaleToConfig = vi.hoisted(() => vi.fn());
+
 vi.mock("@/app", () => ({
 	addApplication: vi.fn(),
+}));
+
+vi.mock("@/config/locales", () => ({
+	hasLocaleInConfig,
+	addLocaleToConfig,
 }));
 
 vi.mock("@/translation", async () => {
@@ -22,6 +30,9 @@ vi.mock("@/translation", async () => {
 describe("runAddCommand", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+
+		hasLocaleInConfig.mockResolvedValue(true);
+		addLocaleToConfig.mockResolvedValue(undefined);
 	});
 
 	const config = defineConfig({
@@ -111,12 +122,73 @@ describe("runAddCommand", () => {
 		expect(applyTranslationAddPlan).toHaveBeenCalledWith(config, plan, true);
 	});
 
-	it("rejects an unconfigured locale", async () => {
-		await expect(
-			runAddCommand(config, {
-				locale: "es-ES",
-			}),
-		).rejects.toThrow('The locale "es-ES" is not configured.');
+	it("adds a new locale to the config", async () => {
+		const plan = {
+			files: [],
+		};
+
+		hasLocaleInConfig.mockResolvedValue(false);
+
+		vi.mocked(addApplication).mockResolvedValue({
+			plan,
+			skippedLocales: [],
+		});
+
+		vi.mocked(applyTranslationAddPlan).mockResolvedValue({
+			filesCreated: 1,
+			filesUpdated: 0,
+		});
+
+		await runAddCommand(config, {
+			locale: "es-ES",
+		});
+
+		expect(hasLocaleInConfig).toHaveBeenCalledWith("es-ES");
+		expect(addLocaleToConfig).toHaveBeenCalledWith("es-ES");
+
+		const updatedConfig = {
+			...config,
+			locales: ["ar-SA", "fr-FR", "de-DE", "es-ES"],
+		};
+
+		expect(addApplication).toHaveBeenCalledWith(updatedConfig, {
+			locale: "es-ES",
+		});
+
+		expect(applyTranslationAddPlan).toHaveBeenCalledWith(
+			updatedConfig,
+			plan,
+			false,
+		);
+	});
+
+	it("does not modify the config for an existing locale", async () => {
+		const plan = {
+			files: [],
+		};
+
+		hasLocaleInConfig.mockResolvedValue(true);
+
+		vi.mocked(addApplication).mockResolvedValue({
+			plan,
+			skippedLocales: [],
+		});
+
+		vi.mocked(applyTranslationAddPlan).mockResolvedValue({
+			filesCreated: 0,
+			filesUpdated: 0,
+		});
+
+		await runAddCommand(config, {
+			locale: "de-DE",
+		});
+
+		expect(hasLocaleInConfig).toHaveBeenCalledWith("de-DE");
+		expect(addLocaleToConfig).not.toHaveBeenCalled();
+
+		expect(addApplication).toHaveBeenCalledWith(config, {
+			locale: "de-DE",
+		});
 	});
 
 	it("rejects when neither locale nor file is specified", async () => {
