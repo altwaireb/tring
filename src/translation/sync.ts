@@ -1,12 +1,10 @@
+import type { TranslationChange } from "./apply";
 import type { TranslationDocument } from "./document";
 import type { TranslationFile } from "./file";
 import { extractTranslationKeys } from "./keys";
 import { getTranslationValue } from "./values";
 
-export interface TranslationSyncChange {
-	key: string;
-	sourceValue: string;
-}
+export type TranslationSyncChange = TranslationChange;
 
 export interface TranslationSyncFile {
 	locale: string;

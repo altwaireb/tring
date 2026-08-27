@@ -197,6 +197,18 @@ export const logger = {
 		console.log(formatIconMark(SYMBOLS.info, message, options, chalk.cyan));
 	},
 
+	plusMark(message: string, options: LoggerOptions = {}): void {
+		console.log(formatIconMark(SYMBOLS.plus, message, options, chalk.green));
+	},
+
+	minusMark(message: string, options: LoggerOptions = {}): void {
+		console.log(formatIconMark(SYMBOLS.minus, message, options, chalk.red));
+	},
+
+	bulletMark(message: string, options: LoggerOptions = {}): void {
+		console.log(formatIconMark(SYMBOLS.bullet, message, options, chalk.white));
+	},
+
 	textWithHint(
 		message: string,
 		hint: string,

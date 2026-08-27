@@ -1,4 +1,9 @@
 export {
+	type AddApplicationOptions,
+	type AddApplicationResult,
+	addApplication,
+} from "./add";
+export {
 	type AnalyzeApplicationOptions,
 	type AnalyzeApplicationResult,
 	analyzeApplication,

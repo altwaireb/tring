@@ -1,4 +1,16 @@
 export {
+	createTranslationAddPlan,
+	type TranslationAddChange,
+	type TranslationAddFile,
+	type TranslationAddPlan,
+} from "./add";
+export {
+	applyTranslationAddPlan,
+	type TranslationAddWriteFile,
+	type TranslationAddWritePlan,
+	type TranslationAddWriteResult,
+} from "./add-write";
+export {
 	analyzeTranslationDocuments,
 	analyzeTranslations,
 	type TranslationAnalysis,
