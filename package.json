@@ -1,6 +1,6 @@
 {
 	"name": "tring",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "A developer-first toolkit for managing JSON translations.",
 	"keywords": [
 		"i18n",
