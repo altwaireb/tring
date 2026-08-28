@@ -12,7 +12,7 @@ export default defineCommand({
 	meta: {
 		name: "analyze",
 		description: "Analyze all configured locales.",
-		alias: "a",
+		alias: "n",
 	},
 
 	args: {

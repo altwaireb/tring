@@ -2,22 +2,25 @@
 
 A developer-first toolkit for managing JSON translations.
 
-Tring analyzes translation files, detects missing and extra files and keys, and provides a focused CLI workflow for keeping localized resources in sync.
+Tring analyzes translation resources, detects missing and extra files and keys, validates translation values and ordering, and provides a focused CLI workflow for keeping localized resources in sync.
 
 ## Features
 
-- Analyze translation files across locales.
-- Detect missing translation files.
-- Detect extra translation files.
-- Detect missing translation keys.
-- Detect extra translation keys.
-- Analyze a specific locale.
-- Inspect matched translation files when needed.
-- Support multiple translation file layouts.
+- Analyze translations across configured locales.
+- Check translation files for structural and content issues.
+- Detect missing and extra translation files.
+- Detect missing and extra translation keys.
+- Detect empty translation values.
+- Detect unsorted translation keys.
+- Compare translation values across locales.
+- Find missing translations.
+- Add missing translation keys.
+- Synchronize translation resources.
+- Sort translation keys alphabetically.
 - Support nested translation directories.
+- Support multiple translation layouts.
 - TypeScript configuration.
-- Clear CLI output designed for local development and CI.
-- Non-zero exit codes when translation issues are detected.
+- CI-friendly non-zero exit codes.
 - Lightweight CLI built with Citty.
 
 ## Installation
@@ -42,46 +45,37 @@ yarn add --dev tring
 
 ## Quick Start
 
-Initialize Tring in your project:
+Initialize Tring:
 
 ```bash
 tring init
 ```
 
-This creates:
-
-```text
-tring.config.ts
-```
-
-Check the project configuration:
+Check the project setup:
 
 ```bash
 tring doctor
 ```
 
-Then analyze your translations:
+Analyze translations:
 
 ```bash
 tring analyze
 ```
 
-For a more detailed report that also includes matched files:
+Check translation files:
 
 ```bash
-tring analyze --show-files
+tring check
 ```
 
-### Analyze a specific locale
+A typical workflow is:
 
 ```bash
-tring analyze-only ar-SA
-```
-
-Short alias:
-
-```bash
-tring ao ar-SA
+tring init
+tring doctor
+tring analyze
+tring check
 ```
 
 ## Configuration
@@ -92,16 +86,16 @@ Tring uses a TypeScript configuration file named:
 tring.config.ts
 ```
 
-A basic configuration looks like:
+Example:
 
 ```ts
 import { defineConfig, TranslationLayout } from "tring";
 
 export default defineConfig({
-	directory: "app/i18n",
-	layout: TranslationLayout.directories,
-	source: "en-US",
-	locales: ["ar-SA"],
+    directory: "app/i18n",
+    layout: TranslationLayout.directories,
+    source: "en-US",
+    locales: ["ar-SA", "fr-FR"],
 });
 ```
 
@@ -109,18 +103,16 @@ export default defineConfig({
 
 | Option | Description |
 | --- | --- |
-| `directory` | Root directory containing translation files. |
+| `directory` | Root directory containing translation resources. |
 | `layout` | Translation file layout. |
 | `source` | Source locale used as the translation reference. |
-| `locales` | Target locales to analyze. |
+| `locales` | Target locales to analyze and synchronize. |
 
-## Translation Layout
+## Translation Layouts
 
-Tring supports different layouts for organizing translation files.
+### Directories
 
-### `TranslationLayout.directories`
-
-Translations are organized inside a directory for each locale:
+Each locale has its own directory:
 
 ```text
 app/
@@ -128,39 +120,27 @@ app/
     ├── en-US/
     │   ├── common.json
     │   ├── auth.json
-    │   ├── admin/
-    │   │   └── common.json
-    │   └── user/
-    │       └── common.json
+    │   └── admin/
+    │       └── users.json
     └── ar-SA/
         ├── common.json
         ├── auth.json
-        ├── admin/
-        │   └── common.json
-        └── user/
-            └── common.json
+        └── admin/
+            └── users.json
 ```
 
-Nested directories are supported. Translation files are identified by their path relative to the locale directory.
+Nested directories are supported. A translation resource is identified by its path relative to the locale directory.
 
 For example:
 
 ```text
-en-US/admin/common.json
-en-US/user/common.json
+en-US/admin/users.json
+en-US/dashboard/overview.json
 ```
 
-are treated as different translation resources even though both files are named `common.json`.
+are separate translation resources.
 
-The source locale is used as the reference:
-
-```text
-en-US
-  ↓
-ar-SA
-```
-
-### `TranslationLayout.files`
+### Files
 
 Each locale is represented by a single JSON file:
 
@@ -171,9 +151,241 @@ app/
     └── ar-SA.json
 ```
 
-For this layout, the locale JSON file itself is identified as the locale file.
-
 ## Commands
+
+All commands are available through their short aliases.
+
+| Command | Alias | Description |
+| --- | --- | --- |
+| `add` | `a` | Add missing translation keys. |
+| `analyze` | `n` | Analyze all configured locales. |
+| `analyze-only` | `no` | Analyze a specific locale. |
+| `check` | `c` | Check translation files for issues. |
+| `compare` | `o` | Compare translation resources. |
+| `doctor` | `d` | Check the Tring project setup. |
+| `init` | `i` | Create a Tring configuration file. |
+| `list` | `l` | List translation resources. |
+| `missing` | `m` | Find missing translations. |
+| `sort` | `s` | Sort translation keys alphabetically. |
+| `sync` | `y` | Synchronize translation files. |
+
+Use:
+
+```bash
+tring --help
+```
+
+or:
+
+```bash
+tring <command> --help
+```
+
+for command-specific help.
+
+---
+
+### `tring add`
+
+Add missing translation keys to configured locales.
+
+```bash
+tring add
+```
+
+Alias:
+
+```bash
+tring a
+```
+
+Options:
+
+```text
+-e, --empty
+-l, --locale=<locale>
+-f, --file=<file>
+```
+
+- `--empty` — use empty values for missing keys.
+- `--locale` — add keys only for the specified locale.
+- `--file` — add the specified translation file to configured locales.
+
+---
+
+### `tring analyze`
+
+Analyze all configured target locales.
+
+```bash
+tring analyze
+```
+
+Alias:
+
+```bash
+tring n
+```
+
+Option:
+
+```text
+-f, --show-files
+```
+
+Use `--show-files` to include matched translation files in the report.
+
+---
+
+### `tring analyze-only`
+
+Analyze a specific configured locale.
+
+```bash
+tring analyze-only ar-SA
+```
+
+Alias:
+
+```bash
+tring no ar-SA
+```
+
+Option:
+
+```text
+-f, --show-files
+```
+
+The requested locale must be configured in `tring.config.ts`.
+
+---
+
+### `tring check`
+
+Check translation files for common translation issues.
+
+```bash
+tring check
+```
+
+Alias:
+
+```bash
+tring c
+```
+
+Options:
+
+```text
+-no-empty, --skipEmpty
+-no-sort, --skipSort
+```
+
+The check detects:
+
+- Missing files.
+- Extra files.
+- Missing keys.
+- Extra keys.
+- Empty values.
+- Unsorted keys.
+
+Example:
+
+```text
+✗ Translation check found 29 issues
+
+  Missing files  │  7
+  Extra files    │  0
+  Missing keys   │  4
+  Extra keys     │  0
+  Empty values   │  1
+  Unsorted       │ 17
+
+Missing files
+
+  ✗ ar-SA │ dashboard/analytics/reports.json
+  ✗ fr-FR │ admin/roles.json
+
+Missing keys
+
+  ✗ fr-FR │ admin/users.json │ status.active
+  ✗ de-DE │ admin/users.json │ status.inactive
+
+Empty values
+
+  ⚠ fr-FR │ settings.json │ status.active
+
+Unsorted
+
+  ✗ ar-SA │ auth.json
+```
+
+A clean project reports:
+
+```text
+✓ Translation check passed
+```
+
+---
+
+### `tring compare`
+
+Compare translation values for a resource across locales.
+
+```bash
+tring compare
+```
+
+Alias:
+
+```bash
+tring o
+```
+
+Options:
+
+```text
+-f, --file=<file>
+-k, --key=<key>
+```
+
+`--file` selects a translation resource directly.
+
+`--key` compares a specific translation key. If the key exists in multiple resources, Tring prompts you to select the resource.
+
+Examples:
+
+```bash
+tring compare --file=auth.json
+```
+
+```bash
+tring compare --key=login.title
+```
+
+The two options can also be combined when a specific key in a specific resource is required.
+
+---
+
+### `tring doctor`
+
+Check the Tring project setup.
+
+```bash
+tring doctor
+```
+
+Alias:
+
+```bash
+tring d
+```
+
+The command validates the project configuration and translation setup.
+
+---
 
 ### `tring init`
 
@@ -189,158 +401,150 @@ Alias:
 tring i
 ```
 
-#### Options
+Option:
 
 ```text
 --force
 ```
 
-Overwrite an existing configuration file.
+Use `--force` to overwrite an existing configuration file.
 
 ---
 
-### `tring doctor`
+### `tring list`
 
-Check the Tring project configuration and translation structure.
+List translation resources.
 
 ```bash
-tring doctor
+tring list
 ```
 
 Alias:
 
 ```bash
-tring d
+tring l
 ```
-
-The command checks:
-
-- Tring configuration.
-- Translation directory.
-- Translation layout.
-- Configured locales.
 
 ---
 
-### `tring analyze`
+### `tring missing`
 
-Analyze all configured target locales.
+Find missing translations.
 
 ```bash
-tring analyze
+tring missing
 ```
 
 Alias:
 
 ```bash
-tring a
+tring m
 ```
 
-Example output:
-
-```text
-Translation Analysis
-
-Source: en-US
-Target: ar-SA
-
-Files Missing
-  ✗ admin/settings.json | ar-SA
-
-Files Extra
-  • admin/legacy.json | ar-SA
-
-Keys Missing
-  ✗ auth.login.button | ar-SA | auth.json
-  ✗ profile.email | ar-SA | common/profile.json
-
-Extra Keys
-  • auth.login.dec | ar-SA | auth.json
-
-Summary
-  Files missing: 1
-  Files extra: 1
-  Keys missing: 2
-  Extra keys: 1
-```
-
-Each issue includes the target locale and, for key issues, the translation resource containing the key.
-
-#### `--show-files`
-
-```bash
-tring analyze --show-files
-```
-
-Output:
-
-```text
-Translation Analysis
-
-Source: en-US
-Target: ar-SA
-
-Files
-  ✓ auth.json | ar-SA
-  ✓ common.json | ar-SA
-
-Files Missing
-  ✗ settings.json | ar-SA
-
-Keys Missing
-  ✗ login.button | ar-SA | auth.json
-
-Extra Keys
-  • logout.title | ar-SA | auth.json
-
-Summary
-  Files missing: 1
-  Files extra: 0
-  Keys missing: 1
-  Extra keys: 1
-```
+The command can display missing translations and, when requested, empty translation values.
 
 ---
 
-### `tring analyze-only`
+### `tring sort`
 
-Analyze a single configured target locale.
+Sort translation keys alphabetically.
 
 ```bash
-tring analyze-only ar-SA
+tring sort
 ```
 
 Alias:
 
 ```bash
-tring ao ar-SA
+tring s
 ```
 
-The locale must exist in `tring.config.ts`.
-
-If the locale is not configured:
+Options:
 
 ```text
-Locale "fr-FR" is not configured. tring.config.ts
+-f, --file=<file>
+-l, --locale=<locale>
 ```
 
-The command returns exit code `1`.
-
-#### `--show-files`
+Examples:
 
 ```bash
-tring analyze-only ar-SA --show-files
+tring sort --file=en-US/admin/users.json
 ```
-
-The option can also be used with the alias:
 
 ```bash
-tring ao ar-SA --show-files
+tring sort --locale=ar-SA
 ```
+
+`--file` and `--locale` cannot be used together.
+
+---
+
+### `tring sync`
+
+Synchronize translation resources with the source locale.
+
+```bash
+tring sync
+```
+
+Alias:
+
+```bash
+tring y
+```
+
+Options:
+
+```text
+-d, --dry-run
+-a, --apply
+-e, --empty
+-l, --locale=<locale>
+-f, --file=<file>
+```
+
+- `--dry-run` — preview the planned changes without modifying files.
+- `--apply` — apply the synchronization plan.
+- `--empty` — use empty values for missing translation keys when applying changes.
+- `--locale` — synchronize only the specified locale.
+- `--file` — synchronize only the specified translation file.
+
+Examples:
+
+Preview changes:
+
+```bash
+tring sync --dry-run
+```
+
+Apply changes:
+
+```bash
+tring sync --apply
+```
+
+Apply changes using empty values:
+
+```bash
+tring sync --apply --empty
+```
+
+Synchronize one locale:
+
+```bash
+tring sync --apply --locale=ar-SA
+```
+
+`--dry-run` and `--apply` cannot be used together.
+
+`--empty` requires `--apply`.
+
+For the `files` translation layout, `--file` is not supported.
 
 ## Analysis
 
-Tring compares the source locale against each target locale at two levels.
+Tring compares the configured source locale with each target locale.
 
 ### Files
 
@@ -350,7 +554,7 @@ Tring detects:
 - Extra files.
 - Matched files.
 
-For example:
+Example:
 
 ```text
 Source:
@@ -370,30 +574,30 @@ ar-SA/
     └── legacy.json
 ```
 
-The result:
+The result includes:
 
 ```text
-Files Missing
-  ✗ admin/settings.json | ar-SA
+Missing files
 
-Files Extra
-  • admin/legacy.json | ar-SA
+  ✗ ar-SA │ admin/settings.json
+
+Extra files
+
+  ✗ ar-SA │ admin/legacy.json
 ```
-
-Matched files are only shown when `--show-files` is used.
 
 ### Keys
 
-Tring recursively compares translation keys.
+Translation keys are compared recursively.
 
 Source:
 
 ```json
 {
-	"login": {
-		"title": "Login",
-		"button": "Sign in"
-	}
+    "login": {
+        "title": "Login",
+        "button": "Sign in"
+    }
 }
 ```
 
@@ -401,98 +605,92 @@ Target:
 
 ```json
 {
-	"login": {
-		"title": "تسجيل الدخول"
-	}
+    "login": {
+        "title": "تسجيل الدخول"
+    }
 }
 ```
 
-Result:
+Tring reports:
 
 ```text
-Keys Missing
-  ✗ login.button | ar-SA | auth.json
+Missing keys
+
+  ✗ ar-SA │ auth.json │ login.button
 ```
 
-Extra keys are also reported:
-
-```text
-Extra Keys
-  • logout.title | ar-SA | auth.json
-```
+Extra keys are reported in the same way.
 
 ## Exit Codes
 
 | Exit code | Meaning |
 | ---: | --- |
-| `0` | Analysis completed without translation issues. |
-| `1` | Translation issues were detected or the requested locale is not configured. |
+| `0` | Command completed successfully without a command error. |
+| `1` | Translation issues were detected or the command could not complete successfully. |
 
-This makes Tring suitable for CI:
+This makes Tring suitable for CI environments.
 
-```bash
-tring analyze
-```
-
-### CI example
-
-GitHub Actions:
+Example:
 
 ```yaml
-- name: Analyze translations
-  run: pnpm exec tring analyze
+- name: Check translations
+  run: pnpm exec tring check
 ```
-
-A translation mismatch will fail the step automatically.
 
 ## Recommended Workflow
 
+Initialize the project:
+
 ```bash
 tring init
-tring doctor
-tring analyze
 ```
 
-When working on a specific locale:
-
-```bash
-tring ao ar-SA
-```
-
-When debugging the complete file structure:
-
-```bash
-tring analyze --show-files
-```
-
-Before committing changes:
+Validate the setup:
 
 ```bash
 tring doctor
+```
+
+Analyze translations:
+
+```bash
 tring analyze
 ```
 
-## Project Structure
+Check translation integrity:
 
-A typical Tring project:
+```bash
+tring check
+```
 
-```text
-my-project/
-├── app/
-│   └── i18n/
-│       ├── en-US/
-│       │   ├── common.json
-│       │   ├── auth.json
-│       │   └── admin/
-│       │       └── settings.json
-│       └── ar-SA/
-│           ├── common.json
-│           ├── auth.json
-│           └── admin/
-│               └── settings.json
-├── tring.config.ts
-├── package.json
-└── ...
+Work on a specific locale:
+
+```bash
+tring analyze-only ar-SA
+```
+
+Compare a translation resource:
+
+```bash
+tring compare --file=auth.json
+```
+
+Add missing keys:
+
+```bash
+tring add
+```
+
+Synchronize resources:
+
+```bash
+tring sync --apply
+```
+
+Sort translation keys:
+
+```bash
+tring sort
 ```
 
 ## CLI Reference
@@ -500,27 +698,15 @@ my-project/
 ```text
 tring init|i
 tring doctor|d
-tring analyze|a
-tring analyze-only|ao <locale>
-```
-
-### `init`
-
-```text
---force
-```
-
-### `analyze`
-
-```text
---show-files
-```
-
-### `analyze-only`
-
-```text
-<locale>
---show-files
+tring list|l
+tring compare|o
+tring missing|m
+tring analyze|n
+tring analyze-only|no <locale>
+tring sort|s
+tring sync|y
+tring add|a
+tring check|c
 ```
 
 ## Development
@@ -537,6 +723,18 @@ Run the type checker:
 
 ```bash
 pnpm check
+```
+
+Run the linter:
+
+```bash
+pnpm lint
+```
+
+Format the project:
+
+```bash
+pnpm format
 ```
 
 Run the test suite:
@@ -559,41 +757,35 @@ pnpm pack
 
 ## Testing
 
-Tring uses Vitest for its test suite.
+Tring uses Vitest.
 
-The test suite covers:
+The test suite covers translation discovery, reading, comparison, analysis, synchronization, sorting, CLI commands, output formatting, aliases, configuration, and integration scenarios.
 
-- Translation key extraction.
-- Key comparison.
-- Translation file discovery.
-- Translation file reading.
-- File comparison.
-- Translation analysis.
-- Report generation.
-- Report formatting.
-- Application analysis.
-- CLI command behavior.
-- Command aliases.
-- Exit codes.
-- Locale validation.
-- Integration scenarios.
-
-Run all tests with:
+Run all tests:
 
 ```bash
 pnpm test
 ```
 
+Before submitting a change:
+
+```bash
+pnpm format
+pnpm lint
+pnpm check
+pnpm test
+```
+
 ## Package Testing
 
-Before publishing a release:
+Build and package Tring:
 
 ```bash
 pnpm build
 pnpm pack
 ```
 
-Then install the generated package in an example project:
+Then test the generated package:
 
 ```bash
 cd examples/basic
@@ -606,36 +798,23 @@ Run the CLI:
 ```bash
 pnpm exec tring doctor
 pnpm exec tring analyze
-pnpm exec tring analyze --show-files
-pnpm exec tring ao ar-SA
+pnpm exec tring check
 ```
-
-## Roadmap
-
-Tring is being developed around a small, composable CLI and analysis core.
-
-Planned areas include:
-
-- Additional translation validation.
-- More configurable output formats.
-- Machine-readable analysis output.
-- Additional translation layouts.
-- Improved CI integrations.
-- Additional developer tooling around translation maintenance.
 
 ## Contributing
 
 Contributions are welcome.
 
-Before submitting a change, make sure the following checks pass:
+Before submitting a change, make sure the formatting, linting, type checking, and test suite pass:
 
 ```bash
+pnpm format
+pnpm lint
 pnpm check
 pnpm test
-pnpm build
 ```
 
-For changes affecting CLI behavior, test the generated package from the tarball as well.
+For CLI changes, test the generated package from the tarball as well.
 
 ## License
 

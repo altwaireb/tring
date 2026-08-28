@@ -17,7 +17,7 @@ export default defineCommand({
 	meta: {
 		name: "compare",
 		description: "Compare translation resources.",
-		alias: "c",
+		alias: "o",
 	},
 
 	args: {

@@ -68,4 +68,7 @@ export {
 	type TranslationSyncWritePlan,
 	type TranslationSyncWriteResult,
 } from "./sync-write";
-export { getTranslationValue } from "./values";
+export {
+	getEmptyTranslationKeys,
+	getTranslationValue,
+} from "./values";

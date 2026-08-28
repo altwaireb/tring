@@ -11,19 +11,22 @@ describe("CLI Sub-commands", () => {
 
 		expect(subCommands).toBeDefined();
 
-		// All Commands
 		const expectedCommands = [
-			"init",
-			"doctor",
+			"add",
 			"analyze",
 			"analyze-only",
+			"check",
 			"compare",
+			"doctor",
+			"init",
+			"list",
 			"missing",
 			"sort",
+			"sync",
 		];
 
-		expectedCommands.forEach((cmd) => {
-			expect(subCommands).toHaveProperty(cmd);
+		expectedCommands.forEach((command) => {
+			expect(subCommands).toHaveProperty(command);
 		});
 	});
 });

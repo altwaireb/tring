@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { getTranslationValue } from "@/translation/values";
+import {
+	getEmptyTranslationKeys,
+	getTranslationValue,
+} from "@/translation/values";
 
 describe("getTranslationValue", () => {
 	it("gets a top-level value", () => {
@@ -45,5 +48,62 @@ describe("getTranslationValue", () => {
 		};
 
 		expect(getTranslationValue(document, "settings.title")).toBe("");
+	});
+});
+
+describe("getEmptyTranslationKeys", () => {
+	it("finds top-level empty values", () => {
+		const document = {
+			title: "",
+			description: "Manage your settings",
+		};
+
+		expect(getEmptyTranslationKeys(document)).toEqual(["title"]);
+	});
+
+	it("finds nested empty values", () => {
+		const document = {
+			settings: {
+				title: "",
+				description: "Manage your settings",
+				security: {
+					password: "",
+				},
+			},
+		};
+
+		expect(getEmptyTranslationKeys(document)).toEqual([
+			"settings.title",
+			"settings.security.password",
+		]);
+	});
+
+	it("returns an empty array when there are no empty values", () => {
+		const document = {
+			title: "Settings",
+			settings: {
+				description: "Manage your settings",
+			},
+		};
+
+		expect(getEmptyTranslationKeys(document)).toEqual([]);
+	});
+
+	it("preserves the document key order", () => {
+		const document = {
+			z: "",
+			a: "",
+			settings: {
+				y: "",
+				b: "",
+			},
+		};
+
+		expect(getEmptyTranslationKeys(document)).toEqual([
+			"z",
+			"a",
+			"settings.y",
+			"settings.b",
+		]);
 	});
 });

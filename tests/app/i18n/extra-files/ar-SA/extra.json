@@ -1,0 +1,15 @@
+{
+	"title": "الإعدادات",
+	"account": {
+		"title": "الحساب",
+		"email": "البريد الإلكتروني"
+	},
+	"security": {
+		"title": "الأمان",
+		"password": "كلمة المرور"
+	},
+	"status": {
+		"active": "نشط",
+		"inactive": "غير نشط"
+	}
+}

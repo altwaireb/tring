@@ -11,7 +11,7 @@ export default defineCommand({
 	meta: {
 		name: "analyze-only",
 		description: "Analyze a specific locale.",
-		alias: "ao",
+		alias: "no",
 	},
 
 	args: {

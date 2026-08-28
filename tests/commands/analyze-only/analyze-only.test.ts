@@ -11,7 +11,7 @@ describe("analyze-only command", () => {
 				: await analyzeOnly.meta;
 
 		expect(meta?.name).toBe("analyze-only");
-		expect(meta?.alias).toBe("ao");
+		expect(meta?.alias).toBe("no");
 	});
 
 	it("defines locale as a required positional argument", async () => {

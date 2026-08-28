@@ -19,3 +19,31 @@ export function getTranslationValue(
 
 	return typeof current === "string" ? current : undefined;
 }
+
+export function getEmptyTranslationKeys(
+	document: JsonObject,
+): TranslationKey[] {
+	const keys: TranslationKey[] = [];
+
+	function visit(value: JsonObject, prefix = ""): void {
+		for (const [key, child] of Object.entries(value)) {
+			const translationKey = prefix ? `${prefix}.${key}` : key;
+
+			if (typeof child === "string") {
+				if (child === "") {
+					keys.push(translationKey);
+				}
+
+				continue;
+			}
+
+			if (typeof child === "object" && child !== null) {
+				visit(child as JsonObject, translationKey);
+			}
+		}
+	}
+
+	visit(document);
+
+	return keys;
+}

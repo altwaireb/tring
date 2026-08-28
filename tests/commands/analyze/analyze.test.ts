@@ -11,7 +11,7 @@ describe("analyze command", () => {
 				: await analyze.meta;
 
 		expect(meta?.name).toBe("analyze");
-		expect(meta?.alias).toBe("a");
+		expect(meta?.alias).toBe("n");
 	});
 
 	it("accepts the analyze alias", async () => {

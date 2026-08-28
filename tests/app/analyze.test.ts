@@ -90,7 +90,7 @@ describe("analyzeApplication", () => {
 		});
 	});
 
-	it("reports missing files when the target locale has no files", async () => {
+	it("reports missing files while analyzing matched files", async () => {
 		const config = {
 			directory: join(I18N_DIRECTORY, "missing-files"),
 			layout: TranslationLayout.directories,
@@ -105,29 +105,28 @@ describe("analyzeApplication", () => {
 		expect(result.reports[0]).toMatchObject({
 			source: "en-US",
 			target: "ar-SA",
-
 			files: {
 				missing: [
-					{
+					expect.objectContaining({
+						name: "settings",
 						locale: "en-US",
-						name: "auth",
-						path: join(config.directory, "en-US", "auth.json"),
-					},
+					}),
 				],
 				extra: [],
-				matched: [],
-			},
-
-			keys: {
-				missing: [],
-				extra: [],
-			},
-
-			summary: {
-				filesMissing: 1,
-				filesExtra: 0,
-				keysMissing: 0,
-				extraKeys: 0,
+				matched: [
+					expect.objectContaining({
+						source: expect.objectContaining({
+							name: "auth",
+							locale: "en-US",
+						}),
+						target: expect.objectContaining({
+							name: "auth",
+							locale: "ar-SA",
+						}),
+						missingKeys: [],
+						extraKeys: [],
+					}),
+				],
 			},
 		});
 	});

@@ -9,6 +9,13 @@ export {
 	analyzeApplication,
 } from "./analyze";
 export {
+	type CheckApplicationOptions,
+	type CheckApplicationResult,
+	checkApplication,
+	type TranslationCheckIssue,
+	type TranslationCheckIssueType,
+} from "./check";
+export {
 	type CompareApplicationResult,
 	type CompareResourceResult,
 	compareApplication,
