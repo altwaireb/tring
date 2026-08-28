@@ -14,7 +14,7 @@
 	"homepage": "https://github.com/altwaireb/tring",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/altwaireb/tring.git"
+		"url": "git+https://github.com/altwaireb/tring.git"
 	},
 	"bugs": {
 		"url": "https://github.com/altwaireb/tring/issues"
@@ -23,7 +23,7 @@
 	"author": "Abdulmajeed Altwaireb",
 	"type": "module",
 	"bin": {
-		"tring": "./dist/cli-entry.mjs"
+		"tring": "dist/cli-entry.mjs"
 	},
 	"files": [
 		"dist"
