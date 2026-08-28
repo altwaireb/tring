@@ -3,6 +3,7 @@ import {
 	analyzeTranslations,
 	createTranslationReport,
 	discoverTranslationFiles,
+	getTranslationFilesByLocale,
 	type TranslationReport,
 } from "@/translation";
 
@@ -18,7 +19,8 @@ export async function analyzeApplication(
 	config: TringConfig,
 	options: AnalyzeApplicationOptions = {},
 ): Promise<AnalyzeApplicationResult> {
-	const sourceFiles = await discoverTranslationFiles(config);
+	const files = await discoverTranslationFiles(config);
+	const sourceFiles = getTranslationFilesByLocale(files, config.source);
 
 	const targetLocales = options.targetLocale
 		? [options.targetLocale]
@@ -27,14 +29,12 @@ export async function analyzeApplication(
 	const reports: TranslationReport[] = [];
 
 	for (const targetLocale of targetLocales) {
-		const targetFiles = sourceFiles.filter(
-			(file) => file.locale === targetLocale,
-		);
+		const targetFiles = getTranslationFilesByLocale(files, targetLocale);
 
 		const analysis = await analyzeTranslations(
 			config.source,
 			targetLocale,
-			sourceFiles.filter((file) => file.locale === config.source),
+			sourceFiles,
 			targetFiles,
 		);
 

@@ -3,6 +3,7 @@ import { join } from "@/filesystem";
 import {
 	createTranslationSyncPlan,
 	discoverTranslationFiles,
+	getTranslationFilesByLocale,
 	readTranslationFile,
 	type TranslationDocument,
 	type TranslationFile,
@@ -25,8 +26,7 @@ export async function syncApplication(
 ): Promise<SyncApplicationResult> {
 	const files = await discoverTranslationFiles(config);
 
-	const sourceFiles = files
-		.filter((file) => file.locale === config.source)
+	const sourceFiles = getTranslationFilesByLocale(files, config.source)
 		.filter((file) => options.file === undefined || file.key === options.file)
 		.sort((a, b) => a.key.localeCompare(b.key));
 

@@ -2,6 +2,7 @@ import type { TringConfig } from "@/config";
 import {
 	discoverTranslationFiles,
 	extractTranslationKeys,
+	getTranslationFilesByLocale,
 	readTranslationFile,
 	type TranslationFile,
 } from "@/translation";
@@ -12,9 +13,7 @@ export async function findTranslationKeyResources(
 ): Promise<TranslationFile[]> {
 	const files = await discoverTranslationFiles(config);
 
-	const sourceFiles = files
-		.filter((file) => file.locale === config.source)
-		.sort((a, b) => a.key.localeCompare(b.key));
+	const sourceFiles = getTranslationFilesByLocale(files, config.source);
 
 	const resources: TranslationFile[] = [];
 

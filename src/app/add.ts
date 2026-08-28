@@ -1,10 +1,11 @@
 import { TranslationLayout, type TringConfig } from "@/config";
 import { join } from "@/filesystem";
-import type { TranslationAddWritePlan } from "@/translation";
 import {
 	createTranslationAddPlan,
 	discoverTranslationFiles,
+	getTranslationFilesByLocale,
 	readTranslationFile,
+	type TranslationAddWritePlan,
 	type TranslationDocument,
 	type TranslationFile,
 } from "@/translation";
@@ -25,8 +26,7 @@ export async function addApplication(
 ): Promise<AddApplicationResult> {
 	const files = await discoverTranslationFiles(config);
 
-	const sourceFiles = files
-		.filter((file) => file.locale === config.source)
+	const sourceFiles = getTranslationFilesByLocale(files, config.source)
 		.filter((file) => options.file === undefined || file.key === options.file)
 		.sort((a, b) => a.key.localeCompare(b.key));
 

@@ -1,5 +1,9 @@
 import type { TringConfig } from "@/config";
-import { discoverTranslationFiles, type TranslationFile } from "@/translation";
+import {
+	discoverTranslationFiles,
+	getTranslationFilesByLocale,
+	type TranslationFile,
+} from "@/translation";
 
 export interface TranslationResourceSummary {
 	locale: string;
@@ -20,9 +24,9 @@ export async function listApplication(
 
 	const resources = [...locales].map((locale) => ({
 		locale,
-		files: files
-			.filter((file) => file.locale === locale)
-			.sort((a, b) => a.key.localeCompare(b.key)),
+		files: getTranslationFilesByLocale(files, locale).sort((a, b) =>
+			a.key.localeCompare(b.key),
+		),
 	}));
 
 	return {

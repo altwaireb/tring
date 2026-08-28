@@ -32,6 +32,7 @@ export {
 export { discoverTranslationFiles } from "./discover";
 export type { TranslationDocument } from "./document";
 export type { TranslationFile } from "./file";
+export { findTranslationFile, getTranslationFilesByLocale } from "./files";
 export { isTranslationKey, type TranslationKey } from "./key";
 export { extractTranslationKeys } from "./keys";
 export type { TranslationLocale } from "./locale";

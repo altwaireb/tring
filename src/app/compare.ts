@@ -2,6 +2,8 @@ import type { TringConfig } from "@/config";
 import {
 	compareTranslationValues,
 	discoverTranslationFiles,
+	findTranslationFile,
+	getTranslationFilesByLocale,
 	readTranslationFile,
 	type TranslationFile,
 	type TranslationValueComparison,
@@ -22,9 +24,9 @@ export async function compareApplication(
 ): Promise<CompareApplicationResult> {
 	const files = await discoverTranslationFiles(config);
 
-	const resources = files
-		.filter((file) => file.locale === config.source)
-		.sort((a, b) => a.key.localeCompare(b.key));
+	const resources = getTranslationFilesByLocale(files, config.source).sort(
+		(a, b) => a.key.localeCompare(b.key),
+	);
 
 	return {
 		source: config.source,
@@ -38,9 +40,7 @@ export async function compareResource(
 ): Promise<CompareResourceResult> {
 	const files = await discoverTranslationFiles(config);
 
-	const source = files.find(
-		(file) => file.locale === config.source && file.key === resource.key,
-	);
+	const source = findTranslationFile(files, config.source, resource.key);
 
 	if (!source) {
 		throw new Error(
@@ -49,9 +49,7 @@ export async function compareResource(
 	}
 
 	const targets = config.locales
-		.map((locale) =>
-			files.find((file) => file.locale === locale && file.key === resource.key),
-		)
+		.map((locale) => findTranslationFile(files, locale, resource.key))
 		.filter((file): file is TranslationFile => file !== undefined);
 
 	const sourceDocument = await readTranslationFile(source);

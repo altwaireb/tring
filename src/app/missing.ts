@@ -1,7 +1,9 @@
 import type { TringConfig } from "@/config";
 import {
 	discoverTranslationFiles,
+	findTranslationFile,
 	findTranslationMissingIssues,
+	getTranslationFilesByLocale,
 	readTranslationFile,
 	type TranslationFile,
 	type TranslationMissingIssue,
@@ -16,9 +18,7 @@ export async function missingApplication(
 ): Promise<MissingApplicationResult> {
 	const files = await discoverTranslationFiles(config);
 
-	const sourceFiles = files
-		.filter((file) => file.locale === config.source)
-		.sort((a, b) => a.key.localeCompare(b.key));
+	const sourceFiles = getTranslationFilesByLocale(files, config.source);
 
 	const issues: TranslationMissingIssue[] = [];
 
@@ -26,11 +26,7 @@ export async function missingApplication(
 		const sourceDocument = await readTranslationFile(sourceFile);
 
 		const targetFiles = config.locales
-			.map((locale) =>
-				files.find(
-					(file) => file.locale === locale && file.key === sourceFile.key,
-				),
-			)
+			.map((locale) => findTranslationFile(files, locale, sourceFile.key))
 			.filter((file): file is TranslationFile => file !== undefined);
 
 		const targetDocuments = await Promise.all(

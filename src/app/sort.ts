@@ -5,12 +5,13 @@ import {
 	TranslationFileNotFoundError,
 } from "@/exceptions";
 import { write } from "@/filesystem";
-import type { TranslationFile } from "@/translation";
 import {
 	discoverTranslationFiles,
+	getTranslationFilesByLocale,
 	isTranslationObjectSorted,
 	readTranslationFile,
 	sortTranslationObject,
+	type TranslationFile,
 } from "@/translation";
 
 export interface SortApplicationOptions {
@@ -102,7 +103,7 @@ function selectSortFiles(
 	}
 
 	if (options.locale !== undefined) {
-		return files.filter((file) => file.locale === options.locale);
+		return getTranslationFilesByLocale(files, options.locale);
 	}
 
 	return files;
