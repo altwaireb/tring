@@ -232,7 +232,8 @@ describe("printCheckResult", () => {
 					message: "Missing translation file.",
 					locale: "ar-SA",
 					file: "dashboard/analytics/reports.json",
-					path: "app/i18n/ar-SA/dashboard/analytics/reports.json",
+					path: "app\\i18n\\ar-SA\\dashboard\\analytics\\reports.json",
+					normalizedPath: "app/i18n/ar-SA/dashboard/analytics/reports.json",
 				}),
 			],
 			{ github: true },
@@ -253,7 +254,8 @@ describe("printCheckResult", () => {
 					message: "Extra translation file.",
 					locale: "de-DE",
 					file: "admin/legacy.json",
-					path: "app/i18n/de-DE/admin/legacy.json",
+					path: "app\\i18n\\de-DE\\admin\\legacy.json",
+					normalizedPath: "app/i18n/de-DE/admin/legacy.json",
 				}),
 			],
 			{ github: true },
@@ -275,7 +277,8 @@ describe("printCheckResult", () => {
 					locale: "de-DE",
 					file: "admin/users.json",
 					key: "status.active",
-					path: "app/i18n/de-DE/admin/users.json",
+					path: "app\\i18n\\de-DE\\admin\\users.json",
+					normalizedPath: "app/i18n/de-DE/admin/users.json",
 				}),
 			],
 			{ github: true },
@@ -297,7 +300,8 @@ describe("printCheckResult", () => {
 					locale: "fr-FR",
 					file: "auth.json",
 					key: "debug",
-					path: "app/i18n/fr-FR/auth.json",
+					path: "app\\i18n\\fr-FR\\auth.json",
+					normalizedPath: "app/i18n/fr-FR/auth.json",
 				}),
 			],
 			{ github: true },
@@ -319,7 +323,8 @@ describe("printCheckResult", () => {
 					locale: "fr-FR",
 					file: "settings.json",
 					key: "status.active",
-					path: "app/i18n/fr-FR/settings.json",
+					path: "app\\i18n\\fr-FR\\settings.json",
+					normalizedPath: "app/i18n/fr-FR/settings.json",
 				}),
 			],
 			{ github: true },
@@ -340,7 +345,8 @@ describe("printCheckResult", () => {
 					message: "Translation keys are not sorted.",
 					locale: "ar-SA",
 					file: "admin/users.json",
-					path: "app/i18n/ar-SA/admin/users.json",
+					path: "app\\i18n\\ar-SA\\admin\\users.json",
+					normalizedPath: "app/i18n/ar-SA/admin/users.json",
 				}),
 			],
 			{ github: true },
@@ -361,7 +367,8 @@ describe("printCheckResult", () => {
 					message: "Missing translation file.",
 					locale: "ar-SA",
 					file: "dashboard/analytics/reports.json",
-					path: "app/i18n/ar-SA/dashboard/analytics/reports.json",
+					path: "app\\i18n\\ar-SA\\dashboard\\analytics\\reports.json",
+					normalizedPath: "app/i18n/ar-SA/dashboard/analytics/reports.json",
 				}),
 				createIssue("missing-key", {
 					title: "Missing key",
@@ -369,7 +376,8 @@ describe("printCheckResult", () => {
 					locale: "de-DE",
 					file: "admin/users.json",
 					key: "status.active",
-					path: "app/i18n/de-DE/admin/users.json",
+					path: "app\\i18n\\de-DE\\admin\\users.json",
+					normalizedPath: "app/i18n/de-DE/admin/users.json",
 				}),
 				createIssue("empty-value", {
 					title: "Empty value",
@@ -377,7 +385,8 @@ describe("printCheckResult", () => {
 					locale: "fr-FR",
 					file: "settings.json",
 					key: "status.active",
-					path: "app/i18n/fr-FR/settings.json",
+					path: "app\\i18n\\fr-FR\\settings.json",
+					normalizedPath: "app/i18n/fr-FR/settings.json",
 				}),
 			],
 			{ github: true },
@@ -399,6 +408,29 @@ describe("printCheckResult", () => {
 
 		expect(output).not.toContain("Translation check found");
 	});
+
+	it("uses the normalized path for GitHub annotations", () => {
+		const consoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
+
+		printCheckResult(
+			[
+				createIssue("missing-key", {
+					title: "Missing key",
+					message: "Missing translation key: status.active",
+					locale: "de-DE",
+					file: "admin/users.json",
+					key: "status.active",
+					path: "app\\i18n\\de-DE\\admin\\users.json",
+					normalizedPath: "app/i18n/de-DE/admin/users.json",
+				}),
+			],
+			{ github: true },
+		);
+
+		expect(consoleLog).toHaveBeenCalledWith(
+			"::error file=app/i18n/de-DE/admin/users.json,title=Missing key::Missing translation key: status.active",
+		);
+	});
 });
 
 function createIssue(
@@ -411,7 +443,8 @@ function createIssue(
 		message: "Test issue message",
 		locale: "ar-SA",
 		file: "auth.json",
-		path: "app/i18n/ar-SA/auth.json",
+		path: "app\\i18n\\ar-SA\\auth.json",
+		normalizedPath: "app/i18n/ar-SA/auth.json",
 		...overrides,
 	};
 }

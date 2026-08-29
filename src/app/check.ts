@@ -28,6 +28,7 @@ export interface TranslationCheckIssue {
 	file: string;
 	key?: string;
 	path: string;
+	normalizedPath: string;
 }
 
 export interface CheckApplicationOptions {
@@ -56,24 +57,32 @@ export async function checkApplication(
 		const fileComparison = compareTranslationFiles(sourceFiles, targetFiles);
 
 		for (const file of fileComparison.missing) {
+			const path = join(config.directory, locale, file.key);
+			const normalizedPath = path.replaceAll("\\", "/");
+
 			issues.push({
 				title: "Missing file",
 				type: "missing-file",
 				message: "Missing translation file.",
 				locale,
 				file: file.key,
-				path: join(config.directory, locale, file.key),
+				path,
+				normalizedPath,
 			});
 		}
 
 		for (const file of fileComparison.extra) {
+			const path = join(config.directory, locale, file.key);
+			const normalizedPath = path.replaceAll("\\", "/");
+
 			issues.push({
 				title: "Extra file",
 				type: "extra-file",
 				message: "Extra translation file.",
 				locale,
 				file: file.key,
-				path: join(config.directory, locale, file.key),
+				path,
+				normalizedPath,
 			});
 		}
 
@@ -86,6 +95,9 @@ export async function checkApplication(
 
 			const keyComparison = compareTranslationKeys(sourceKeys, targetKeys);
 
+			const path = join(config.directory, locale, matched.target.key);
+			const normalizedPath = path.replaceAll("\\", "/");
+
 			for (const key of keyComparison.missing) {
 				issues.push({
 					title: "Missing key",
@@ -94,7 +106,8 @@ export async function checkApplication(
 					locale,
 					file: matched.target.key,
 					key,
-					path: join(config.directory, locale, matched.target.key),
+					path,
+					normalizedPath,
 				});
 			}
 
@@ -106,7 +119,8 @@ export async function checkApplication(
 					locale,
 					file: matched.target.key,
 					key,
-					path: join(config.directory, locale, matched.target.key),
+					path,
+					normalizedPath,
 				});
 			}
 
@@ -119,7 +133,8 @@ export async function checkApplication(
 						locale,
 						file: matched.target.key,
 						key,
-						path: join(config.directory, locale, matched.target.key),
+						path,
+						normalizedPath,
 					});
 				}
 			}
@@ -134,7 +149,8 @@ export async function checkApplication(
 					message: "Translation keys are not sorted.",
 					locale,
 					file: matched.target.key,
-					path: join(config.directory, locale, matched.target.key),
+					path,
+					normalizedPath,
 				});
 			}
 		}

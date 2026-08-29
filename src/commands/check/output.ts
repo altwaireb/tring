@@ -85,7 +85,7 @@ function printCheckGitHubResult(
 	for (const issue of issues) {
 		if (issue.type === "empty-value") {
 			logger.githubWarning(issue.message, {
-				file: issue.path,
+				file: issue.normalizedPath,
 				title: issue.title,
 			});
 
@@ -93,7 +93,7 @@ function printCheckGitHubResult(
 		}
 
 		logger.githubError(issue.message, {
-			file: issue.path,
+			file: issue.normalizedPath,
 			title: issue.title,
 		});
 	}
