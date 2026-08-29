@@ -92,10 +92,10 @@ Example:
 import { defineConfig, TranslationLayout } from "tring";
 
 export default defineConfig({
-    directory: "app/i18n",
-    layout: TranslationLayout.directories,
-    source: "en-US",
-    locales: ["ar-SA", "fr-FR"],
+	directory: "app/i18n",
+	layout: TranslationLayout.directories,
+	source: "en-US",
+	locales: ["ar-SA", "fr-FR"],
 });
 ```
 
@@ -163,7 +163,7 @@ All commands are available through their short aliases.
 | `check` | `c` | Check translation files for issues. |
 | `compare` | `o` | Compare translation resources. |
 | `doctor` | `d` | Check the Tring project setup. |
-| `init` | `i` | Create a Tring configuration file. |
+| `init` | `i` | Create a new Tring configuration file. |
 | `list` | `l` | List translation resources. |
 | `missing` | `m` | Find missing translations. |
 | `sort` | `s` | Sort translation keys alphabetically. |
@@ -278,9 +278,14 @@ tring c
 Options:
 
 ```text
--no-empty, --skipEmpty
--no-sort, --skipSort
+-skip-empty, --skipEmpty
+-skip-sort, --skipSort
+--github
 ```
+
+- `-skip-empty` — skip empty translation value checks.
+- `--skip-sort` — skip translation key sorting checks.
+- `--github` — format issues as GitHub workflow annotations.
 
 The check detects:
 
@@ -302,24 +307,6 @@ Example:
   Extra keys     │  0
   Empty values   │  1
   Unsorted       │ 17
-
-Missing files
-
-  ✗ ar-SA │ dashboard/analytics/reports.json
-  ✗ fr-FR │ admin/roles.json
-
-Missing keys
-
-  ✗ fr-FR │ admin/users.json │ status.active
-  ✗ de-DE │ admin/users.json │ status.inactive
-
-Empty values
-
-  ⚠ fr-FR │ settings.json │ status.active
-
-Unsorted
-
-  ✗ ar-SA │ auth.json
 ```
 
 A clean project reports:
@@ -327,6 +314,26 @@ A clean project reports:
 ```text
 ✓ Translation check passed
 ```
+
+When running in GitHub Actions, use `--github` to emit GitHub workflow annotations:
+
+```bash
+tring check --github
+```
+
+For example:
+
+```text
+::error file=app/i18n/de-DE/admin/users.json,title=Missing key::Missing translation key: status.active
+```
+
+Empty translation values are reported as warnings:
+
+```text
+::warning file=app/i18n/fr-FR/settings.json,title=Empty value::Empty translation value: status.active
+```
+
+The `--github` option outputs GitHub workflow annotations instead of the normal check report.
 
 ---
 
@@ -358,11 +365,11 @@ Options:
 Examples:
 
 ```bash
-tring compare --file=auth.json
+tring compare --file auth.json
 ```
 
 ```bash
-tring compare --key=login.title
+tring compare --key login.title
 ```
 
 The two options can also be combined when a specific key in a specific resource is required.
@@ -469,11 +476,11 @@ Options:
 Examples:
 
 ```bash
-tring sort --file=en-US/admin/users.json
+tring sort --file en-US/admin/users.json
 ```
 
 ```bash
-tring sort --locale=ar-SA
+tring sort --locale ar-SA
 ```
 
 `--file` and `--locale` cannot be used together.
@@ -533,7 +540,7 @@ tring sync --apply --empty
 Synchronize one locale:
 
 ```bash
-tring sync --apply --locale=ar-SA
+tring sync --apply --locale ar-SA
 ```
 
 `--dry-run` and `--apply` cannot be used together.
@@ -594,10 +601,10 @@ Source:
 
 ```json
 {
-    "login": {
-        "title": "Login",
-        "button": "Sign in"
-    }
+	"login": {
+		"title": "Login",
+		"button": "Sign in"
+	}
 }
 ```
 
@@ -605,9 +612,9 @@ Target:
 
 ```json
 {
-    "login": {
-        "title": "تسجيل الدخول"
-    }
+	"login": {
+		"title": "تسجيل الدخول"
+	}
 }
 ```
 
@@ -672,7 +679,7 @@ tring analyze-only ar-SA
 Compare a translation resource:
 
 ```bash
-tring compare --file=auth.json
+tring compare --file auth.json
 ```
 
 Add missing keys:
