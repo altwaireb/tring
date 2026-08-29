@@ -3,6 +3,7 @@ import chalk from "chalk";
 import { COLUMN_SEPARATOR, SYMBOLS } from "@/constants";
 
 import {
+	type GitHubAnnotationOptions,
 	Indent,
 	type LoggerOptions,
 	type SeparateOptions,
@@ -124,6 +125,21 @@ function formatLabelValue(
 	const formattedLabel = label.padEnd(labelWidth);
 
 	return formatMessage(`${formattedLabel} : ${chalk.cyan(value)}`, options);
+}
+
+function _githubCommand(
+	command: "error" | "warning",
+	message: string,
+	options?: GitHubAnnotationOptions,
+): void {
+	const properties = [
+		options?.file ? `file=${options.file}` : null,
+		options?.title ? `title=${options.title}` : null,
+	]
+		.filter(Boolean)
+		.join(",");
+
+	console.log(`::${command}${properties ? ` ${properties}` : ""}::${message}`);
 }
 
 export const logger = {
@@ -354,6 +370,14 @@ export const logger = {
 	): void {
 		console.log(formatLabelValue(label, String(value), options));
 	},
+
+	githubError(message: string, options?: GitHubAnnotationOptions): void {
+		_githubCommand("error", message, options);
+	},
+
+	githubWarning(message: string, options?: GitHubAnnotationOptions): void {
+		_githubCommand("warning", message, options);
+	},
 };
 
-export { Gap, Indent } from "./types";
+export { Gap, type GitHubAnnotationOptions, Indent } from "./types";

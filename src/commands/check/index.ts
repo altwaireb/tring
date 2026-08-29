@@ -18,14 +18,20 @@ export default defineCommand({
 		skipEmpty: {
 			type: "boolean",
 			description: "Skip empty translation value checks.",
-			alias: "no-empty",
+			alias: "skip-empty",
 			required: false,
 		},
 
 		skipSort: {
 			type: "boolean",
 			description: "Skip translation key sorting checks.",
-			alias: "no-sort",
+			alias: "skip-sort",
+			required: false,
+		},
+
+		github: {
+			type: "boolean",
+			description: "Format issues as GitHub workflow annotations.",
 			required: false,
 		},
 	},
@@ -51,7 +57,9 @@ export default defineCommand({
 
 			spinner.stop();
 
-			printCheckResult(command.issues);
+			printCheckResult(command.issues, {
+				github: args.github ?? false,
+			});
 
 			process.exitCode = command.exitCode;
 		} catch (error) {

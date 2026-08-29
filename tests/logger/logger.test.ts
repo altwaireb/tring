@@ -338,4 +338,50 @@ describe("logger", () => {
 
 		expect(consoleLog).toHaveBeenCalledWith("files will be changed      : 10");
 	});
+
+	it("prints a GitHub error command", () => {
+		const consoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
+
+		logger.githubError("Translation file is missing.");
+
+		expect(consoleLog).toHaveBeenCalledWith(
+			"::error::Translation file is missing.",
+		);
+	});
+
+	it("prints a GitHub error command with file and title", () => {
+		const consoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
+
+		logger.githubError("Translation file is missing.", {
+			file: "ar-SA/dashboard/analytics/reports.json",
+			title: "Missing file",
+		});
+
+		expect(consoleLog).toHaveBeenCalledWith(
+			"::error file=ar-SA/dashboard/analytics/reports.json,title=Missing file::Translation file is missing.",
+		);
+	});
+
+	it("prints a GitHub warning command", () => {
+		const consoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
+
+		logger.githubWarning("Translation value is empty.");
+
+		expect(consoleLog).toHaveBeenCalledWith(
+			"::warning::Translation value is empty.",
+		);
+	});
+
+	it("prints a GitHub warning command with file and title", () => {
+		const consoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
+
+		logger.githubWarning("Translation value is empty.", {
+			file: "fr-FR/settings.json",
+			title: "Empty value",
+		});
+
+		expect(consoleLog).toHaveBeenCalledWith(
+			"::warning file=fr-FR/settings.json,title=Empty value::Translation value is empty.",
+		);
+	});
 });

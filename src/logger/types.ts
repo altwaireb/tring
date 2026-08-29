@@ -21,6 +21,11 @@ export interface LoggerOptions {
 	indent?: Indent | number;
 }
 
+export interface GitHubAnnotationOptions {
+	file?: string;
+	title?: string;
+}
+
 export interface TextWithHintOptions extends LoggerOptions {
 	gapHint?: Gap;
 }

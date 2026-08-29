@@ -1,3 +1,5 @@
+import { join } from "node:path";
+
 import type { TringConfig } from "@/config";
 import {
 	compareTranslationFiles,
@@ -19,10 +21,13 @@ export type TranslationCheckIssueType =
 	| "unsorted";
 
 export interface TranslationCheckIssue {
+	title: string;
 	type: TranslationCheckIssueType;
+	message: string;
 	locale: string;
 	file: string;
 	key?: string;
+	path: string;
 }
 
 export interface CheckApplicationOptions {
@@ -52,17 +57,23 @@ export async function checkApplication(
 
 		for (const file of fileComparison.missing) {
 			issues.push({
+				title: "Missing file",
 				type: "missing-file",
+				message: "Missing translation file.",
 				locale,
 				file: file.key,
+				path: join(config.directory, locale, file.key),
 			});
 		}
 
 		for (const file of fileComparison.extra) {
 			issues.push({
+				title: "Extra file",
 				type: "extra-file",
+				message: "Extra translation file.",
 				locale,
 				file: file.key,
+				path: join(config.directory, locale, file.key),
 			});
 		}
 
@@ -77,29 +88,38 @@ export async function checkApplication(
 
 			for (const key of keyComparison.missing) {
 				issues.push({
+					title: "Missing key",
 					type: "missing-key",
+					message: `Missing translation key: ${key}`,
 					locale,
 					file: matched.target.key,
 					key,
+					path: join(config.directory, locale, matched.target.key),
 				});
 			}
 
 			for (const key of keyComparison.extra) {
 				issues.push({
+					title: "Extra key",
 					type: "extra-key",
+					message: `Extra translation key: ${key}`,
 					locale,
 					file: matched.target.key,
 					key,
+					path: join(config.directory, locale, matched.target.key),
 				});
 			}
 
 			if (!options.skipEmpty) {
 				for (const key of getEmptyTranslationKeys(targetDocument.data)) {
 					issues.push({
+						title: "Empty value",
 						type: "empty-value",
+						message: `Empty translation value: ${key}`,
 						locale,
 						file: matched.target.key,
 						key,
+						path: join(config.directory, locale, matched.target.key),
 					});
 				}
 			}
@@ -109,9 +129,12 @@ export async function checkApplication(
 				!isTranslationObjectSorted(targetDocument.data)
 			) {
 				issues.push({
+					title: "Unsorted",
 					type: "unsorted",
+					message: "Translation keys are not sorted.",
 					locale,
 					file: matched.target.key,
+					path: join(config.directory, locale, matched.target.key),
 				});
 			}
 		}

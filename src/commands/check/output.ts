@@ -19,6 +19,10 @@ const ISSUE_TYPES: TranslationCheckIssueType[] = [
 	"unsorted",
 ];
 
+export interface PrintCheckOptions {
+	github?: boolean;
+}
+
 function printIssueSummary(issues: readonly TranslationCheckIssue[]): void {
 	const counts = new Map<TranslationCheckIssueType, number>();
 
@@ -75,9 +79,35 @@ function printIssueGroup(
 	return true;
 }
 
-export function printCheckResult(
+function printCheckGitHubResult(
 	issues: readonly TranslationCheckIssue[],
 ): void {
+	for (const issue of issues) {
+		if (issue.type === "empty-value") {
+			logger.githubWarning(issue.message, {
+				file: issue.path,
+				title: issue.title,
+			});
+
+			continue;
+		}
+
+		logger.githubError(issue.message, {
+			file: issue.path,
+			title: issue.title,
+		});
+	}
+}
+
+export function printCheckResult(
+	issues: readonly TranslationCheckIssue[],
+	options: PrintCheckOptions = {},
+): void {
+	if (options.github) {
+		printCheckGitHubResult(issues);
+		return;
+	}
+
 	if (issues.length === 0) {
 		logger.successMark("Translation check passed");
 		return;
