@@ -5,6 +5,7 @@ export interface TranslationKeyComparison {
 	extra: TranslationKey[];
 }
 
+/** Compares source and target translation keys. */
 export function compareTranslationKeys(
 	source: TranslationKey[],
 	target: TranslationKey[],

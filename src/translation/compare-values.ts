@@ -8,6 +8,7 @@ export interface TranslationValueComparison {
 	values: Record<string, string | undefined>;
 }
 
+/** Compares translation values across configured locales. */
 export function compareTranslationValues(
 	source: TranslationDocument,
 	targets: TranslationDocument[],

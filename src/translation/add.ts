@@ -19,6 +19,7 @@ export interface TranslationAddPlan {
 	files: TranslationAddFile[];
 }
 
+/** Creates a plan for adding missing translation keys. */
 export function createTranslationAddPlan(
 	source: TranslationDocument,
 	target: TranslationDocument | undefined,

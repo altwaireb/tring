@@ -5,6 +5,7 @@ export interface TranslationPage<T> {
 	hasNext: boolean;
 }
 
+/** Returns a page of translation items with pagination metadata. */
 export function getTranslationPage<T>(
 	items: readonly T[],
 	page: number,

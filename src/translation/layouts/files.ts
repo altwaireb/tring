@@ -4,6 +4,7 @@ import type { TranslationFile } from "../file";
 import type { TranslationLocale } from "../locale";
 import type { TranslationLayoutAdapter } from "./adapter";
 
+/** Resolves translation files stored as locale files. */
 export const filesLayout: TranslationLayoutAdapter = {
 	resolveLocale(directory, locale): TranslationLocale {
 		return {

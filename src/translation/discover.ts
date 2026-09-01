@@ -3,6 +3,7 @@ import type { TringConfig } from "@/config";
 import type { TranslationFile } from "./file";
 import { getTranslationLayoutAdapter } from "./layouts";
 
+/** Discovers translation files for the configured locales. */
 export async function discoverTranslationFiles(
 	config: TringConfig,
 ): Promise<TranslationFile[]> {

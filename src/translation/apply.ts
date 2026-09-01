@@ -5,6 +5,7 @@ export interface TranslationChange {
 	sourceValue: string;
 }
 
+/** Applies translation changes to a JSON document. */
 export function applyTranslationChanges(
 	data: JsonObject,
 	changes: readonly TranslationChange[],

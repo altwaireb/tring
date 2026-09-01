@@ -30,6 +30,7 @@ export interface TranslationReport {
 	};
 }
 
+/** Creates a translation report from an analysis result. */
 export function createTranslationReport(
 	analysis: TranslationAnalysis,
 ): TranslationReport {

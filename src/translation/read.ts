@@ -4,6 +4,7 @@ import { isJsonObject } from "@/json";
 import type { TranslationDocument } from "./document";
 import type { TranslationFile } from "./file";
 
+/** Reads and parses a translation JSON file. */
 export async function readTranslationFile(
 	file: TranslationFile,
 ): Promise<TranslationDocument> {

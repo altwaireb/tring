@@ -22,6 +22,7 @@ export interface TranslationAnalysis {
 	files: TranslationFileAnalysis[];
 }
 
+/** Analyzes a source and target translation document. */
 export function analyzeTranslationDocuments(
 	source: TranslationDocument,
 	target: TranslationDocument,
@@ -39,6 +40,7 @@ export function analyzeTranslationDocuments(
 	};
 }
 
+/** Analyzes translation files between a source and target locale. */
 export async function analyzeTranslations(
 	sourceLocale: string,
 	targetLocale: string,

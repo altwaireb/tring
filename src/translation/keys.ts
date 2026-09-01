@@ -1,6 +1,7 @@
 import { isJsonObject, type JsonObject } from "@/json";
 import { isTranslationKey, type TranslationKey } from "./key";
 
+/** Extracts translation keys from a JSON document. */
 export function extractTranslationKeys(document: JsonObject): TranslationKey[] {
 	const keys: TranslationKey[] = [];
 

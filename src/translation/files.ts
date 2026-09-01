@@ -1,5 +1,6 @@
 import type { TranslationFile } from "./file";
 
+/** Returns translation files for the specified locale. */
 export function getTranslationFilesByLocale(
 	files: TranslationFile[],
 	locale: string,
@@ -7,6 +8,7 @@ export function getTranslationFilesByLocale(
 	return files.filter((file) => file.locale === locale);
 }
 
+/** Finds a translation file by locale and key. */
 export function findTranslationFile(
 	files: TranslationFile[],
 	locale: string,

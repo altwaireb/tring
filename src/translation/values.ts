@@ -2,6 +2,7 @@ import type { JsonObject } from "@/json";
 
 import type { TranslationKey } from "./key";
 
+/** Returns the translation value for a key. */
 export function getTranslationValue(
 	document: JsonObject,
 	key: TranslationKey,
@@ -20,6 +21,7 @@ export function getTranslationValue(
 	return typeof current === "string" ? current : undefined;
 }
 
+/** Finds translation keys with empty values. */
 export function getEmptyTranslationKeys(
 	document: JsonObject,
 ): TranslationKey[] {

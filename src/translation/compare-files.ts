@@ -19,6 +19,7 @@ function getTranslationFileMatchKey(file: TranslationFile): string {
 	return `${file.directory}/${file.name}`;
 }
 
+/** Compares source and target translation files. */
 export function compareTranslationFiles(
 	source: TranslationFile[],
 	target: TranslationFile[],

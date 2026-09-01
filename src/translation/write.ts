@@ -26,6 +26,7 @@ export interface TranslationWriteResult {
 	filesUpdated: number;
 }
 
+/** Applies a translation write plan to the target files. */
 export async function applyTranslationPlan(
 	config: TringConfig,
 	plan: TranslationWritePlan,

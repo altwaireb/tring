@@ -13,6 +13,7 @@ export interface TranslationMissingIssue {
 	isEmpty: boolean;
 }
 
+/** Finds missing or empty translations across target locales. */
 export function findTranslationMissingIssues(
 	source: TranslationDocument,
 	targets: TranslationDocument[],

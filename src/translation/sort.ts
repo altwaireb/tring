@@ -1,5 +1,6 @@
 import { isJsonObject, type JsonObject } from "@/json";
 
+/** Compares two translation key names for sorting. */
 export function compareTranslationKeyNames(
 	source: string,
 	target: string,
@@ -19,6 +20,7 @@ export function compareTranslationKeyNames(
 	});
 }
 
+/** Sorts translation keys recursively in a JSON object. */
 export function sortTranslationObject(object: JsonObject): JsonObject {
 	return Object.fromEntries(
 		Object.entries(object)
@@ -30,6 +32,7 @@ export function sortTranslationObject(object: JsonObject): JsonObject {
 	);
 }
 
+/** Checks whether translation keys are recursively sorted. */
 export function isTranslationObjectSorted(object: JsonObject): boolean {
 	const keys = Object.keys(object);
 

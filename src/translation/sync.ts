@@ -17,6 +17,7 @@ export interface TranslationSyncPlan {
 	files: TranslationSyncFile[];
 }
 
+/** Creates a plan for synchronizing translation files. */
 export function createTranslationSyncPlan(
 	source: TranslationDocument,
 	targets: TranslationDocument[],
