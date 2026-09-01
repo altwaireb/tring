@@ -82,6 +82,9 @@ function localeExists(
 		.some((element) => getLocaleValue(element) === locale);
 }
 
+/**
+ * Checks whether a locale is defined in the Tring configuration.
+ */
 export async function hasLocaleInConfig(locale: string): Promise<boolean> {
 	const sourceFile = await loadConfigSourceFile();
 	const configObject = getConfigObject(sourceFile);
@@ -90,6 +93,9 @@ export async function hasLocaleInConfig(locale: string): Promise<boolean> {
 	return localeExists(locales, locale);
 }
 
+/**
+ * Adds a locale to the Tring configuration.
+ */
 export async function addLocaleToConfig(locale: string): Promise<void> {
 	const sourceFile = await loadConfigSourceFile();
 	const configObject = getConfigObject(sourceFile);
