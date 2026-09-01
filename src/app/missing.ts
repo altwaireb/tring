@@ -13,6 +13,7 @@ export interface MissingApplicationResult {
 	issues: TranslationMissingIssue[];
 }
 
+/** Finds missing translations across configured locales. */
 export async function missingApplication(
 	config: TringConfig,
 ): Promise<MissingApplicationResult> {

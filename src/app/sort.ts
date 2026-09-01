@@ -28,6 +28,7 @@ export interface TranslationSortResult {
 	isModified: boolean;
 }
 
+/** Sorts translation files and writes modified files to disk. */
 export async function sortApplication(
 	config: TringConfig,
 	options: SortApplicationOptions = {},

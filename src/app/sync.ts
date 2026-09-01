@@ -20,6 +20,7 @@ export interface SyncApplicationOptions {
 	file?: string;
 }
 
+/** Creates a plan for synchronizing translation files. */
 export async function syncApplication(
 	config: TringConfig,
 	options: SyncApplicationOptions = {},

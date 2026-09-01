@@ -19,6 +19,7 @@ export interface CompareResourceResult {
 	comparisons: TranslationValueComparison[];
 }
 
+/** Lists translation resources for the source locale. */
 export async function compareApplication(
 	config: TringConfig,
 ): Promise<CompareApplicationResult> {
@@ -34,6 +35,7 @@ export async function compareApplication(
 	};
 }
 
+/** Compares a translation resource across configured locales. */
 export async function compareResource(
 	config: TringConfig,
 	resource: TranslationFile,

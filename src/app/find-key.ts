@@ -7,6 +7,7 @@ import {
 	type TranslationFile,
 } from "@/translation";
 
+/** Finds translation resources containing the specified key. */
 export async function findTranslationKeyResources(
 	config: TringConfig,
 	key: string,

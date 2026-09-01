@@ -15,6 +15,7 @@ export interface ListApplicationResult {
 	resources: TranslationResourceSummary[];
 }
 
+/** Lists translation resources for all configured locales. */
 export async function listApplication(
 	config: TringConfig,
 ): Promise<ListApplicationResult> {

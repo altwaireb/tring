@@ -15,6 +15,7 @@ export interface AnalyzeApplicationResult {
 	reports: TranslationReport[];
 }
 
+/** Analyzes translation files for the configured locales. */
 export async function analyzeApplication(
 	config: TringConfig,
 	options: AnalyzeApplicationOptions = {},

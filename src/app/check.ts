@@ -41,6 +41,7 @@ export interface CheckApplicationResult {
 	issues: TranslationCheckIssue[];
 }
 
+/** Checks translation files for consistency issues. */
 export async function checkApplication(
 	config: TringConfig,
 	options: CheckApplicationOptions = {},

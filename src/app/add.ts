@@ -20,6 +20,7 @@ export interface AddApplicationOptions {
 	file?: string;
 }
 
+/** Creates a plan for adding missing translation keys. */
 export async function addApplication(
 	config: TringConfig,
 	options: AddApplicationOptions,
