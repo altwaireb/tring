@@ -48,7 +48,7 @@ importers:
 
   examples/basic:
     dependencies:
-      tring:
+      '@altwaireb/tring':
         specifier: workspace:*
         version: link:../..
 
