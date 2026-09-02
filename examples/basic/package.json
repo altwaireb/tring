@@ -3,6 +3,6 @@
 	"private": true,
 	"type": "module",
 	"dependencies": {
-		"tring": "workspace:*"
+		"@altwaireb/tring": "workspace:*"
 	}
 }
