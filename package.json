@@ -43,8 +43,7 @@
 		"test": "vitest run",
 		"format": "biome format --write .",
 		"lint": "biome check .",
-		"check": "tsc --noEmit",
-		"preview:logger": "tsx scripts/preview-logger.ts"
+		"check": "tsc --noEmit"
 	},
 	"packageManager": "pnpm@10.17.1",
 	"dependencies": {

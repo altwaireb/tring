@@ -1,92 +1,47 @@
 # Tring
 
+[![npm version](https://img.shields.io/npm/v/tring)](https://www.npmjs.com/package/tring)
+[![CI Status](https://img.shields.io/github/actions/workflow/status/altwaireb/tring/ci.yml)](https://github.com/altwaireb/tring/actions)
+
+> Keep translations in sync. Keep developers in control.
+
 A developer-first toolkit for managing JSON translations.
 
-Tring analyzes translation resources, detects missing and extra files and keys, validates translation values and ordering, and provides a focused CLI workflow for keeping localized resources in sync.
+Tring provides a focused CLI workflow for creating, analyzing, validating, organizing, comparing, and synchronizing localized resources across your project.
 
 ## Features
 
-- Analyze translations across configured locales.
-- Check translation files for structural and content issues.
-- Detect missing and extra translation files.
-- Detect missing and extra translation keys.
-- Detect empty translation values.
-- Detect unsorted translation keys.
-- Compare translation values across locales.
-- Find missing translations.
-- Add missing translation keys.
-- Synchronize translation resources.
-- Sort translation keys alphabetically.
-- Support nested translation directories.
-- Support multiple translation layouts.
-- TypeScript configuration.
-- CI-friendly non-zero exit codes.
-- Lightweight CLI built with Citty.
+- Analyze translations across configured target locales.
+- Detect missing and extra translation files and keys.
+- Detect empty translation values and unsorted keys.
+- Compare and synchronize translation resources automatically or with empty placeholders.
+- Support nested translation directories and multiple layout structures (`directories` or `files`).
+- TypeScript configuration with full type safety (`tring.config.ts`).
+- CI-friendly non-zero exit codes with GitHub Actions annotation formatting.
+- Lightweight and fast CLI built with Citty.
 
 ## Installation
 
-Install Tring as a development dependency:
-
 ```bash
 pnpm add -D tring
-```
-
-Or with npm:
-
-```bash
+# or npm
 npm install --save-dev tring
-```
-
-Or with Yarn:
-
-```bash
+# or yarn
 yarn add --dev tring
 ```
 
 ## Quick Start
 
-Initialize Tring:
-
 ```bash
-tring init
-```
-
-Check the project setup:
-
-```bash
-tring doctor
-```
-
-Analyze translations:
-
-```bash
-tring analyze
-```
-
-Check translation files:
-
-```bash
-tring check
-```
-
-A typical workflow is:
-
-```bash
-tring init
-tring doctor
-tring analyze
-tring check
+tring init      # Create configuration file
+tring doctor    # Validate setup & project structure
+tring analyze   # Run analysis on all target locales
+tring check     # Validate translation files for issues
 ```
 
 ## Configuration
 
-Tring uses a TypeScript configuration file named:
-
-```text
-tring.config.ts
-```
-
-Example:
+Tring uses a TypeScript configuration file named `tring.config.ts`:
 
 ```ts
 import { defineConfig, TranslationLayout } from "tring";
@@ -99,12 +54,12 @@ export default defineConfig({
 });
 ```
 
-### Configuration options
+### Configuration Options
 
 | Option | Description |
 | --- | --- |
 | `directory` | Root directory containing translation resources. |
-| `layout` | Translation file layout. |
+| `layout` | Translation file layout (`directories` or `files`). |
 | `source` | Source locale used as the translation reference. |
 | `locales` | Target locales to analyze and synchronize. |
 
@@ -112,33 +67,20 @@ export default defineConfig({
 
 ### Directories
 
-Each locale has its own directory:
+Each locale has its own directory. Nested directories are supported and identified relative to the locale folder:
 
 ```text
 app/
 └── i18n/
     ├── en-US/
     │   ├── common.json
-    │   ├── auth.json
     │   └── admin/
     │       └── users.json
     └── ar-SA/
         ├── common.json
-        ├── auth.json
         └── admin/
             └── users.json
 ```
-
-Nested directories are supported. A translation resource is identified by its path relative to the locale directory.
-
-For example:
-
-```text
-en-US/admin/users.json
-en-US/dashboard/overview.json
-```
-
-are separate translation resources.
 
 ### Files
 
@@ -151,570 +93,179 @@ app/
     └── ar-SA.json
 ```
 
-## Commands
+## Commands Overview
 
-All commands are available through their short aliases.
+All commands support short aliases for faster workflow:
 
 | Command | Alias | Description |
 | --- | --- | --- |
-| `add` | `a` | Add missing translation keys. |
-| `analyze` | `n` | Analyze all configured locales. |
-| `analyze-only` | `no` | Analyze a specific locale. |
-| `check` | `c` | Check translation files for issues. |
-| `compare` | `o` | Compare translation resources. |
-| `doctor` | `d` | Check the Tring project setup. |
 | `init` | `i` | Create a new Tring configuration file. |
-| `list` | `l` | List translation resources. |
-| `missing` | `m` | Find missing translations. |
+| `doctor` | `d` | Validate configuration and directory setup. |
+| `analyze` | `n` | Analyze all configured locales. |
+| `analyze-only` | `no` | Analyze a single specified locale. |
+| `check` | `c` | Check translation files for structural or content issues. |
+| `add` | `a` | Add missing translation keys to target locales. |
+| `sync` | `y` | Synchronize translation resources with the source locale. |
+| `compare` | `o` | Compare translation values for a file or key across locales. |
+| `missing` | `m` | Find missing keys and empty translation values. |
 | `sort` | `s` | Sort translation keys alphabetically. |
-| `sync` | `y` | Synchronize translation files. |
-
-Use:
-
-```bash
-tring --help
-```
-
-or:
-
-```bash
-tring <command> --help
-```
-
-for command-specific help.
+| `list` | `l` | List translation resources. |
 
 ---
 
-### `tring add`
+## Command Reference & Options
+
+### `tring add` (`a`)
 
 Add missing translation keys to configured locales.
 
 ```bash
-tring add
+tring add [-e|--empty] [-l|--locale=<locale>] [-f|--file=<file>]
 ```
 
-Alias:
+- `-e, --empty` — Use empty values for missing translation keys.
+- `-l, --locale` — Add missing translation keys only for the specified locale.
+- `-f, --file` — Add the specified translation file to all configured locales.
+
+### `tring analyze` (`n`)
+
+Analyze all configured locales.
 
 ```bash
-tring a
+tring analyze [-f|--showFiles]
 ```
 
-Options:
+- `-f, --showFiles` — Show all translation files.
 
-```text
--e, --empty
--l, --locale=<locale>
--f, --file=<file>
-```
+### `tring analyze-only` (`no`)
 
-- `--empty` — use empty values for missing keys.
-- `--locale` — add keys only for the specified locale.
-- `--file` — add the specified translation file to configured locales.
-
----
-
-### `tring analyze`
-
-Analyze all configured target locales.
+Analyze a specific locale.
 
 ```bash
-tring analyze
+tring analyze-only [-f|--showFiles] <locale>
 ```
 
-Alias:
+- `-f, --showFiles` — Show all translation files.
+- `<locale>` — The locale to analyze.
+
+### `tring check` (`c`)
+
+Check translation files for structural or content issues.
 
 ```bash
-tring n
+tring check [--skip-empty] [--skip-sort] [--github]
 ```
 
-Option:
+- `--skip-empty` — Skip empty translation value checks.
+- `--skip-sort` — Skip translation key sorting checks.
+- `--github` — Format issues as GitHub workflow annotations.
 
-```text
--f, --show-files
-```
-
-Use `--show-files` to include matched translation files in the report.
-
----
-
-### `tring analyze-only`
-
-Analyze a specific configured locale.
-
-```bash
-tring analyze-only ar-SA
-```
-
-Alias:
-
-```bash
-tring no ar-SA
-```
-
-Option:
-
-```text
--f, --show-files
-```
-
-The requested locale must be configured in `tring.config.ts`.
-
----
-
-### `tring check`
-
-Check translation files for common translation issues.
-
-```bash
-tring check
-```
-
-Alias:
-
-```bash
-tring c
-```
-
-Options:
-
-```text
--skip-empty, --skipEmpty
--skip-sort, --skipSort
---github
-```
-
-- `-skip-empty` — skip empty translation value checks.
-- `--skip-sort` — skip translation key sorting checks.
-- `--github` — format issues as GitHub workflow annotations.
-
-The check detects:
-
-- Missing files.
-- Extra files.
-- Missing keys.
-- Extra keys.
-- Empty values.
-- Unsorted keys.
-
-Example:
-
-```text
-✗ Translation check found 29 issues
-
-  Missing files  │  7
-  Extra files    │  0
-  Missing keys   │  4
-  Extra keys     │  0
-  Empty values   │  1
-  Unsorted       │ 17
-```
-
-A clean project reports:
-
-```text
-✓ Translation check passed
-```
-
-When running in GitHub Actions, use `--github` to emit GitHub workflow annotations:
-
-```bash
-tring check --github
-```
-
-For example:
+**GitHub Workflow Output Example:**
 
 ```text
 ::error file=app/i18n/de-DE/admin/users.json,title=Missing key::Missing translation key: status.active
-```
-
-Empty translation values are reported as warnings:
-
-```text
 ::warning file=app/i18n/fr-FR/settings.json,title=Empty value::Empty translation value: status.active
 ```
 
-The `--github` option outputs GitHub workflow annotations instead of the normal check report.
+### `tring sync` (`y`)
 
----
+Synchronize translation files.
 
-### `tring compare`
+```bash
+tring sync [--dry-run] [--apply] [--empty] [--locale=<locale>] [--file=<file>]
+```
 
-Compare translation values for a resource across locales.
+- `-d, --dry-run` — Preview translation changes without modifying files.
+- `-a, --apply` — Apply the planned translation changes.
+- `-e, --empty` — Use empty values for missing translation keys when applying changes.
+- `-l, --locale` — Synchronize only the specified locale.
+- `-f, --file` — Synchronize only the specified translation file.
+
+`--dryRun` and `--apply` cannot be used together.
+
+For the `files` translation layout, `--file` is not supported.
+
+### `tring compare` (`o`)
+
+Compare translation values for a specific resource or key across locales.
 
 ```bash
 tring compare
-```
-
-Alias:
-
-```bash
-tring o
-```
-
-Options:
-
-```text
--f, --file=<file>
--k, --key=<key>
-```
-
-`--file` selects a translation resource directly.
-
-`--key` compares a specific translation key. If the key exists in multiple resources, Tring prompts you to select the resource.
-
-Examples:
-
-```bash
 tring compare --file auth.json
-```
-
-```bash
 tring compare --key login.title
 ```
 
-The two options can also be combined when a specific key in a specific resource is required.
+- `-f, --file` — Translation resource file to compare.
+- `-k, --key` — Translation key to compare.
 
----
+### `tring doctor` (`d`)
 
-### `tring doctor`
-
-Check the Tring project setup.
+Check your Tring project setup.
 
 ```bash
 tring doctor
 ```
 
-Alias:
-
-```bash
-tring d
-```
-
-The command validates the project configuration and translation setup.
-
----
-
-### `tring init`
+### `tring init` (`i`)
 
 Create a new Tring configuration file.
 
 ```bash
-tring init
+tring init [--force]
 ```
 
-Alias:
+- `--force` — Overwrite the existing configuration file.
 
-```bash
-tring i
-```
-
-Option:
-
-```text
---force
-```
-
-Use `--force` to overwrite an existing configuration file.
-
----
-
-### `tring list`
+### `tring list` (`l`)
 
 List translation resources.
 
 ```bash
-tring list
+tring list [OPTIONS]
 ```
 
-Alias:
+- `-f, --showFiles` — Show all translation files.
 
-```bash
-tring l
-```
-
----
-
-### `tring missing`
+### `tring missing` (`m`)
 
 Find missing translations.
 
 ```bash
-tring missing
+tring missing [OPTIONS]
 ```
 
-Alias:
+- `-e, --empty` — Include empty translations.
+- `-o, --only-empty` — Show only empty translations.
 
-```bash
-tring m
-```
-
-The command can display missing translations and, when requested, empty translation values.
-
----
-
-### `tring sort`
+### `tring sort` (`s`)
 
 Sort translation keys alphabetically.
 
 ```bash
-tring sort
+tring sort [-f|--file=<file>] [-l|--locale=<locale>]
 ```
 
-Alias:
-
-```bash
-tring s
-```
-
-Options:
-
-```text
--f, --file=<file>
--l, --locale=<locale>
-```
-
-Examples:
-
-```bash
-tring sort --file en-US/admin/users.json
-```
-
-```bash
-tring sort --locale ar-SA
-```
+- `-f, --file` — Translation file path starting with the locale (for example, `en-US/admin/roles.json`).
+- `-l, --locale` — Sort translation files for a specific locale.
 
 `--file` and `--locale` cannot be used together.
 
 ---
 
-### `tring sync`
+## Exit Codes & CI Integration
 
-Synchronize translation resources with the source locale.
-
-```bash
-tring sync
-```
-
-Alias:
-
-```bash
-tring y
-```
-
-Options:
-
-```text
--d, --dry-run
--a, --apply
--e, --empty
--l, --locale=<locale>
--f, --file=<file>
-```
-
-- `--dry-run` — preview the planned changes without modifying files.
-- `--apply` — apply the synchronization plan.
-- `--empty` — use empty values for missing translation keys when applying changes.
-- `--locale` — synchronize only the specified locale.
-- `--file` — synchronize only the specified translation file.
-
-Examples:
-
-Preview changes:
-
-```bash
-tring sync --dry-run
-```
-
-Apply changes:
-
-```bash
-tring sync --apply
-```
-
-Apply changes using empty values:
-
-```bash
-tring sync --apply --empty
-```
-
-Synchronize one locale:
-
-```bash
-tring sync --apply --locale ar-SA
-```
-
-`--dry-run` and `--apply` cannot be used together.
-
-`--empty` requires `--apply`.
-
-For the `files` translation layout, `--file` is not supported.
-
-## Analysis
-
-Tring compares the configured source locale with each target locale.
-
-### Files
-
-Tring detects:
-
-- Missing files.
-- Extra files.
-- Matched files.
-
-Example:
-
-```text
-Source:
-
-en-US/
-├── common.json
-├── auth.json
-└── admin/
-    └── settings.json
-
-Target:
-
-ar-SA/
-├── common.json
-├── auth.json
-└── admin/
-    └── legacy.json
-```
-
-The result includes:
-
-```text
-Missing files
-
-  ✗ ar-SA │ admin/settings.json
-
-Extra files
-
-  ✗ ar-SA │ admin/legacy.json
-```
-
-### Keys
-
-Translation keys are compared recursively.
-
-Source:
-
-```json
-{
-	"login": {
-		"title": "Login",
-		"button": "Sign in"
-	}
-}
-```
-
-Target:
-
-```json
-{
-	"login": {
-		"title": "تسجيل الدخول"
-	}
-}
-```
-
-Tring reports:
-
-```text
-Missing keys
-
-  ✗ ar-SA │ auth.json │ login.button
-```
-
-Extra keys are reported in the same way.
-
-## Exit Codes
-
-| Exit code | Meaning |
+| Exit Code | Meaning |
 | ---: | --- |
 | `0` | Command completed successfully without a command error. |
 | `1` | Translation issues were detected or the command could not complete successfully. |
 
-This makes Tring suitable for CI environments.
-
-Example:
-
+**GitHub Actions Workflow Integration:**
 ```yaml
-- name: Check translations
-  run: pnpm exec tring check
+- name: Validate Translations
+  run: pnpm exec tring check --github
 ```
 
-## Recommended Workflow
-
-Initialize the project:
-
-```bash
-tring init
-```
-
-Validate the setup:
-
-```bash
-tring doctor
-```
-
-Analyze translations:
-
-```bash
-tring analyze
-```
-
-Check translation integrity:
-
-```bash
-tring check
-```
-
-Work on a specific locale:
-
-```bash
-tring analyze-only ar-SA
-```
-
-Compare a translation resource:
-
-```bash
-tring compare --file auth.json
-```
-
-Add missing keys:
-
-```bash
-tring add
-```
-
-Synchronize resources:
-
-```bash
-tring sync --apply
-```
-
-Sort translation keys:
-
-```bash
-tring sort
-```
-
-## CLI Reference
-
-```text
-tring init|i
-tring doctor|d
-tring list|l
-tring compare|o
-tring missing|m
-tring analyze|n
-tring analyze-only|no <locale>
-tring sort|s
-tring sync|y
-tring add|a
-tring check|c
-```
+---
 
 ## Development
 
@@ -726,78 +277,25 @@ cd tring
 pnpm install
 ```
 
-Run the type checker:
+### Quality Checks
 
-```bash
-pnpm check
-```
-
-Run the linter:
-
-```bash
-pnpm lint
-```
-
-Format the project:
+Ensure all checks pass before submitting pull requests:
 
 ```bash
 pnpm format
-```
-
-Run the test suite:
-
-```bash
+pnpm lint
+pnpm check
 pnpm test
-```
-
-Build the package:
-
-```bash
 pnpm build
-```
-
-Create a package archive:
-
-```bash
-pnpm pack
-```
-
-## Testing
-
-Tring uses Vitest.
-
-The test suite covers translation discovery, reading, comparison, analysis, synchronization, sorting, CLI commands, output formatting, aliases, configuration, and integration scenarios.
-
-Run all tests:
-
-```bash
-pnpm test
-```
-
-Before submitting a change:
-
-```bash
-pnpm format
-pnpm lint
-pnpm check
-pnpm test
 ```
 
 ## Package Testing
 
-Build and package Tring:
-
-```bash
-pnpm build
-pnpm pack
-```
-
-Then test the generated package:
+To test the published package from the example project:
 
 ```bash
 cd examples/basic
-pnpm remove tring
-pnpm add ../../tring-*.tgz
+pnpm update tring --latest
 ```
 
 Run the CLI:
@@ -812,16 +310,9 @@ pnpm exec tring check
 
 Contributions are welcome.
 
-Before submitting a change, make sure the formatting, linting, type checking, and test suite pass:
+Before submitting a change, make sure all development checks pass.
 
-```bash
-pnpm format
-pnpm lint
-pnpm check
-pnpm test
-```
-
-For CLI changes, test the generated package from the tarball as well.
+For CLI changes, also test the published package from the example project.
 
 ## License
 
