@@ -1,3 +1,4 @@
+import { TranslationKeyRule } from "@/config";
 import type { TranslationDocument } from "./document";
 import type { TranslationFile } from "./file";
 import { extractTranslationKeys } from "./keys";
@@ -24,8 +25,9 @@ export function createTranslationAddPlan(
 	source: TranslationDocument,
 	target: TranslationDocument | undefined,
 	locale: string,
+	rule = TranslationKeyRule.alphaDash,
 ): TranslationAddPlan {
-	const sourceKeys = extractTranslationKeys(source.data);
+	const sourceKeys = extractTranslationKeys(source.data, rule);
 	const changes: TranslationAddChange[] = [];
 
 	for (const key of sourceKeys) {

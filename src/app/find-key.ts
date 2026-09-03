@@ -20,7 +20,7 @@ export async function findTranslationKeyResources(
 
 	for (const file of sourceFiles) {
 		const document = await readTranslationFile(file);
-		const keys = extractTranslationKeys(document.data);
+		const keys = extractTranslationKeys(document.data, config.keyRule);
 
 		if (keys.includes(key)) {
 			resources.push(file);

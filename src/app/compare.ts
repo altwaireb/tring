@@ -61,9 +61,11 @@ export async function compareResource(
 
 	return {
 		resource,
-		comparisons: compareTranslationValues(sourceDocument, targetDocuments, [
-			config.source,
-			...config.locales,
-		]),
+		comparisons: compareTranslationValues(
+			sourceDocument,
+			targetDocuments,
+			[config.source, ...config.locales],
+			config.keyRule,
+		),
 	};
 }

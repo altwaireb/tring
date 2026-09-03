@@ -7,41 +7,47 @@ export interface PrintAnalyzeReportsOptions {
 }
 
 function printSummary(report: TranslationReport): void {
+	const SUMMARY_LABEL_WIDTH = 26;
+
 	logger.text(MESSAGES.summary, {
 		bold: true,
 	});
 
-	logger.separate(
+	logger.labelValue(
 		MESSAGES.filesMissingSummary,
-		String(report.summary.filesMissing),
+		report.summary.filesMissing,
 		{
 			indent: Indent.level1,
-			gap: Gap.level1,
 		},
+		SUMMARY_LABEL_WIDTH,
 	);
 
-	logger.separate(
+	logger.labelValue(
 		MESSAGES.filesExtraSummary,
-		String(report.summary.filesExtra),
+		report.summary.filesExtra,
 		{
 			indent: Indent.level1,
-			gap: Gap.level1,
 		},
+		SUMMARY_LABEL_WIDTH,
 	);
 
-	logger.separate(
+	logger.labelValue(
 		MESSAGES.keysMissingSummary,
-		String(report.summary.keysMissing),
+		report.summary.keysMissing,
 		{
 			indent: Indent.level1,
-			gap: Gap.level1,
 		},
+		SUMMARY_LABEL_WIDTH,
 	);
 
-	logger.separate(MESSAGES.extraKeysSummary, String(report.summary.extraKeys), {
-		indent: Indent.level1,
-		gap: Gap.level1,
-	});
+	logger.labelValue(
+		MESSAGES.extraKeysSummary,
+		report.summary.extraKeys,
+		{
+			indent: Indent.level1,
+		},
+		SUMMARY_LABEL_WIDTH,
+	);
 }
 
 function printFiles(report: TranslationReport, showFiles: boolean): void {

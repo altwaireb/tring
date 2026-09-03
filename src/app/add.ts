@@ -64,6 +64,7 @@ export async function addApplication(
 				sourceDocument,
 				targetDocument,
 				locale,
+				config.keyRule,
 			);
 
 			if (plan.files.length === 0) {

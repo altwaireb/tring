@@ -119,9 +119,9 @@ function formatSeparateLines(
 function formatLabelValue(
 	label: string,
 	value: string,
+	labelWidth: number,
 	options: LoggerOptions,
 ): string {
-	const labelWidth = 26;
 	const formattedLabel = label.padEnd(labelWidth);
 
 	return formatMessage(`${formattedLabel} : ${chalk.cyan(value)}`, options);
@@ -367,8 +367,9 @@ export const logger = {
 		label: string,
 		value: string | number,
 		options: LoggerOptions = {},
+		labelWidth = 26,
 	): void {
-		console.log(formatLabelValue(label, String(value), options));
+		console.log(formatLabelValue(label, String(value), labelWidth, options));
 	},
 
 	githubError(message: string, options?: GitHubAnnotationOptions): void {

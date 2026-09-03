@@ -37,6 +37,7 @@ export async function analyzeApplication(
 			targetLocale,
 			sourceFiles,
 			targetFiles,
+			config.keyRule,
 		);
 
 		reports.push(createTranslationReport(analysis));

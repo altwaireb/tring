@@ -1,3 +1,5 @@
+import { TranslationKeyRule } from "@/config";
+
 import { compareTranslationKeys } from "./compare";
 import { compareTranslationFiles } from "./compare-files";
 import type { TranslationDocument } from "./document";
@@ -26,9 +28,10 @@ export interface TranslationAnalysis {
 export function analyzeTranslationDocuments(
 	source: TranslationDocument,
 	target: TranslationDocument,
+	rule = TranslationKeyRule.alphaDash,
 ): TranslationFileAnalysis {
-	const sourceKeys = extractTranslationKeys(source.data);
-	const targetKeys = extractTranslationKeys(target.data);
+	const sourceKeys = extractTranslationKeys(source.data, rule);
+	const targetKeys = extractTranslationKeys(target.data, rule);
 
 	const comparison = compareTranslationKeys(sourceKeys, targetKeys);
 
@@ -46,6 +49,7 @@ export async function analyzeTranslations(
 	targetLocale: string,
 	sourceFiles: TranslationFile[],
 	targetFiles: TranslationFile[],
+	rule = TranslationKeyRule.alphaDash,
 ): Promise<TranslationAnalysis> {
 	const fileComparison = compareTranslationFiles(sourceFiles, targetFiles);
 
@@ -55,7 +59,7 @@ export async function analyzeTranslations(
 		const source = await readTranslationFile(matched.source);
 		const target = await readTranslationFile(matched.target);
 
-		files.push(analyzeTranslationDocuments(source, target));
+		files.push(analyzeTranslationDocuments(source, target, rule));
 	}
 
 	return {

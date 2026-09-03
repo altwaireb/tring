@@ -39,6 +39,7 @@ export async function missingApplication(
 				sourceDocument,
 				targetDocuments,
 				config.locales,
+				config.keyRule,
 			),
 		);
 	}

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { TranslationKeyRule } from "@/config";
 import { extractTranslationKeys } from "@/translation";
 
 describe("extractTranslationKeys", () => {
@@ -40,6 +41,27 @@ describe("extractTranslationKeys", () => {
 			"user_profile.first_name",
 			"user_profile.last-name",
 		]);
+	});
+
+	it("validates keys using the specified rule", () => {
+		const document = {
+			"2FA": "Two-factor authentication",
+			"123days": "123 days",
+		};
+
+		expect(
+			extractTranslationKeys(document, TranslationKeyRule.alphaNumeric),
+		).toEqual(["2FA", "123days"]);
+	});
+
+	it("rejects keys that do not match the specified rule", () => {
+		const document = {
+			"2FA": "Two-factor authentication",
+		};
+
+		expect(() =>
+			extractTranslationKeys(document, TranslationKeyRule.alpha),
+		).toThrow('Invalid translation key: "2FA".');
 	});
 
 	it("rejects invalid translation keys", () => {

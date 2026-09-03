@@ -339,6 +339,14 @@ describe("logger", () => {
 		expect(consoleLog).toHaveBeenCalledWith("files will be changed      : 10");
 	});
 
+	it("prints a label value with a custom width", () => {
+		const consoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
+
+		logger.labelValue("files", 10, {}, 10);
+
+		expect(consoleLog).toHaveBeenCalledWith("files      : 10");
+	});
+
 	it("prints a GitHub error command", () => {
 		const consoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
 

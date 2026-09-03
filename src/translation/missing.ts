@@ -1,3 +1,5 @@
+import { TranslationKeyRule } from "@/config";
+
 import type { TranslationDocument } from "./document";
 import type { TranslationFile } from "./file";
 import type { TranslationKey } from "./key";
@@ -18,8 +20,9 @@ export function findTranslationMissingIssues(
 	source: TranslationDocument,
 	targets: TranslationDocument[],
 	locales: readonly string[],
+	rule = TranslationKeyRule.alphaDash,
 ): TranslationMissingIssue[] {
-	const keys = extractTranslationKeys(source.data);
+	const keys = extractTranslationKeys(source.data, rule);
 
 	const targetsByLocale = new Map(
 		targets.map((document) => [document.file.locale, document]),

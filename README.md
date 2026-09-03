@@ -1,6 +1,6 @@
 # Tring
 
-[![npm version](https://img.shields.io/npm/v/tring)](https://www.npmjs.com/package/tring)
+[![npm version](https://img.shields.io/npm/v/%40altwaireb%2Ftring)](https://www.npmjs.com/package/%40altwaireb%2Ftring)
 [![CI Status](https://img.shields.io/github/actions/workflow/status/altwaireb/tring/ci.yml)](https://github.com/altwaireb/tring/actions)
 
 > Keep translations in sync. Keep developers in control.
@@ -23,11 +23,11 @@ Tring provides a focused CLI workflow for creating, analyzing, validating, organ
 ## Installation
 
 ```bash
-pnpm add -D tring
+pnpm add -D @altwaireb/tring
 # or npm
-npm install --save-dev tring
+npm install --save-dev @altwaireb/tring
 # or yarn
-yarn add --dev tring
+yarn add --dev @altwaireb/tring
 ```
 
 ## Quick Start
@@ -44,13 +44,22 @@ tring check     # Validate translation files for issues
 Tring uses a TypeScript configuration file named `tring.config.ts`:
 
 ```ts
-import { defineConfig, TranslationLayout } from "tring";
+import {
+	defineConfig,
+	TranslationKeyRule,
+	TranslationLayout,
+} from "@altwaireb/tring";
 
 export default defineConfig({
 	directory: "app/i18n",
 	layout: TranslationLayout.directories,
 	source: "en-US",
 	locales: ["ar-SA", "fr-FR"],
+
+	// Translation key validation rule.
+	// Default: TranslationKeyRule.alphaDash
+	// Available: alpha, alphaNumeric, alphaDash, ascii, asciiSpaces
+	keyRule: TranslationKeyRule.alphaDash,
 });
 ```
 
@@ -62,6 +71,45 @@ export default defineConfig({
 | `layout` | Translation file layout (`directories` or `files`). |
 | `source` | Source locale used as the translation reference. |
 | `locales` | Target locales to analyze and synchronize. |
+| `keyRule` | Translation key validation rule. Defaults to `TranslationKeyRule.alphaDash`. |
+
+## Translation Key Rules
+
+Tring validates translation keys according to the configured `keyRule`.
+
+If no rule is specified, Tring uses `TranslationKeyRule.alphaDash`.
+
+| Rule | Allowed characters |
+| --- | --- |
+| `alpha` | ASCII letters only (`A-Z`, `a-z`). |
+| `alphaNumeric` | ASCII letters and digits. Digits are allowed at the beginning. |
+| `alphaDash` | ASCII letters, digits, `_`, and `-`. `_` and `-` cannot appear at the beginning or end. |
+| `ascii` | Printable ASCII characters except spaces. |
+| `asciiSpaces` | Printable ASCII characters, including spaces. |
+
+For example:
+
+```ts
+keyRule: TranslationKeyRule.alphaNumeric,
+```
+
+This allows keys such as:
+
+```json
+{
+	"2FA": "Two-factor authentication",
+	"123days": "123 days",
+	"APIV2": "API version 2"
+}
+```
+
+For keys that contain spaces:
+
+```ts
+keyRule: TranslationKeyRule.asciiSpaces,
+```
+
+The built-in rules support ASCII characters only. Non-ASCII characters such as Arabic, Japanese, and Chinese are not accepted.
 
 ## Translation Layouts
 
@@ -295,7 +343,7 @@ To test the published package from the example project:
 
 ```bash
 cd examples/basic
-pnpm update tring --latest
+pnpm update @altwaireb/tring --latest
 ```
 
 Run the CLI:

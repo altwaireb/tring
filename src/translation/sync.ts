@@ -1,3 +1,4 @@
+import { TranslationKeyRule } from "@/config";
 import type { TranslationChange } from "./apply";
 import type { TranslationDocument } from "./document";
 import type { TranslationFile } from "./file";
@@ -22,8 +23,9 @@ export function createTranslationSyncPlan(
 	source: TranslationDocument,
 	targets: TranslationDocument[],
 	locales: readonly string[],
+	rule = TranslationKeyRule.alphaDash,
 ): TranslationSyncPlan {
-	const sourceKeys = extractTranslationKeys(source.data);
+	const sourceKeys = extractTranslationKeys(source.data, rule);
 
 	const targetsByLocale = new Map(
 		targets.map((document) => [document.file.locale, document]),

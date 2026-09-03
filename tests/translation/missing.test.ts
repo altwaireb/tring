@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { TranslationKeyRule } from "@/config";
 import type { TranslationDocument } from "@/translation";
 import {
 	findTranslationMissingIssues,
@@ -28,6 +29,32 @@ describe("findTranslationMissingIssues", () => {
 		expect(issues).toEqual([
 			{
 				key: "status.inactive",
+				locale: "ar-SA",
+				resource: source.file,
+				value: undefined,
+				isMissing: true,
+				isEmpty: false,
+			},
+		]);
+	});
+
+	it("validates source keys using the specified rule", () => {
+		const source = createDocument("en-US", {
+			"2FA": "Two-factor authentication",
+		});
+
+		const arabic = createDocument("ar-SA", {});
+
+		const issues = findTranslationMissingIssues(
+			source,
+			[arabic],
+			["ar-SA"],
+			TranslationKeyRule.alphaNumeric,
+		);
+
+		expect(issues).toEqual([
+			{
+				key: "2FA",
 				locale: "ar-SA",
 				resource: source.file,
 				value: undefined,

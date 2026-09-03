@@ -91,8 +91,14 @@ export async function checkApplication(
 			const sourceDocument = await readTranslationFile(matched.source);
 			const targetDocument = await readTranslationFile(matched.target);
 
-			const sourceKeys = extractTranslationKeys(sourceDocument.data);
-			const targetKeys = extractTranslationKeys(targetDocument.data);
+			const sourceKeys = extractTranslationKeys(
+				sourceDocument.data,
+				config.keyRule,
+			);
+			const targetKeys = extractTranslationKeys(
+				targetDocument.data,
+				config.keyRule,
+			);
 
 			const keyComparison = compareTranslationKeys(sourceKeys, targetKeys);
 

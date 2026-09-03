@@ -56,6 +56,7 @@ export async function syncApplication(
 			sourceDocument,
 			sourceTargetDocuments,
 			locales,
+			config.keyRule,
 		);
 
 		for (const file of plan.files) {

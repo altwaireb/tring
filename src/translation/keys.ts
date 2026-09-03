@@ -1,13 +1,17 @@
+import { TranslationKeyRule } from "@/config";
 import { isJsonObject, type JsonObject } from "@/json";
 import { isTranslationKey, type TranslationKey } from "./key";
 
 /** Extracts translation keys from a JSON document. */
-export function extractTranslationKeys(document: JsonObject): TranslationKey[] {
+export function extractTranslationKeys(
+	document: JsonObject,
+	rule = TranslationKeyRule.alphaDash,
+): TranslationKey[] {
 	const keys: TranslationKey[] = [];
 
 	function visit(object: JsonObject, parents: string[]): void {
 		for (const [key, value] of Object.entries(object)) {
-			if (!isTranslationKey(key)) {
+			if (!isTranslationKey(key, rule)) {
 				throw new Error(`Invalid translation key: "${key}".`);
 			}
 

@@ -18,6 +18,38 @@ export enum TranslationLayout {
 }
 
 /**
+ * Translation key validation rules.
+ */
+export enum TranslationKeyRule {
+	/**
+	 * ASCII letters only.
+	 */
+	alpha = "alpha",
+
+	/**
+	 * ASCII letters and numbers only.
+	 */
+	alphaNumeric = "alphaNumeric",
+
+	/**
+	 * ASCII letters, numbers, underscores, and dashes.
+	 *
+	 * Underscores and dashes cannot appear at the beginning or end.
+	 */
+	alphaDash = "alphaDash",
+
+	/**
+	 * Printable ASCII characters except spaces.
+	 */
+	ascii = "ascii",
+
+	/**
+	 * Printable ASCII characters including spaces.
+	 */
+	asciiSpaces = "asciiSpaces",
+}
+
+/**
  * JSON formatting options.
  */
 export interface JsonOptions {
@@ -58,6 +90,13 @@ export interface TringConfig {
 	 * Supported locales.
 	 */
 	locales: readonly string[];
+
+	/**
+	 * Translation key validation rule.
+	 *
+	 * @default TranslationKeyRule.alphaDash
+	 */
+	keyRule?: TranslationKeyRule;
 
 	/**
 	 * JSON formatting options.

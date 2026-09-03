@@ -4,5 +4,6 @@ export type {
 } from "./config";
 export {
 	defineConfig,
+	TranslationKeyRule,
 	TranslationLayout,
 } from "./config";
